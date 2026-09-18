@@ -35,7 +35,7 @@ const CreateSociety = () => {
   const onSubmit = async (data) => {
     setSubmitting(true);
     try {
-      const res = await postrequest("http://localhost:3000/api/member/createsociety", data);
+      const res = await postrequest(`${import.meta.env.VITE_API_URL}/api/member/createsociety`, data);
       if (res.success) {
         toast.success("Society created successfully!");
         navigate("/home/memberdashboard");

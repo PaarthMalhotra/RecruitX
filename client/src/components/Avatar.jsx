@@ -18,7 +18,7 @@ const Avatar = () => {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const res = await getrequest("http://localhost:3000/api/user/getuserdetails");
+        const res = await getrequest(`${import.meta.env.VITE_API_URL}/api/user/getuserdetails`);
         const details = res.details || res;
         if (details) {
           setProfile(details);
@@ -51,7 +51,7 @@ const Avatar = () => {
 
   const handleLogout = async () => {
     try {
-      await postrequest("http://localhost:3000/api/logout");
+      await postrequest(`${import.meta.env.VITE_API_URL}/api/logout`);
     } catch (e) {
       console.error(e);
     }

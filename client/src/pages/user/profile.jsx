@@ -21,7 +21,7 @@ const Profile = () => {
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        const res = await getrequest("http://localhost:3000/api/user/getuserdetails");
+        const res = await getrequest(`${import.meta.env.VITE_API_URL}/api/user/getuserdetails`);
         const details = res.details || res;
         if (details) {
           if (details.dob) {
@@ -41,7 +41,7 @@ const Profile = () => {
 
   const onSubmit = async (data) => {
     const response = await postrequest(
-      "http://localhost:3000/api/user/createuserprofile",
+      `${import.meta.env.VITE_API_URL}/api/user/createuserprofile`,
       data
     );
 

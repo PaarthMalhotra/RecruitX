@@ -18,7 +18,7 @@ const AddDepartment = () => {
   useEffect(() => {
     async function loadSociety() {
       try {
-        const res = await getrequest("http://localhost:3000/api/member/mysociety");
+        const res = await getrequest(`${import.meta.env.VITE_API_URL}/api/member/mysociety`);
         if (res.success && res.society) {
           setSociety(res.society);
         } else {
@@ -85,7 +85,7 @@ const AddDepartment = () => {
         })),
       };
 
-      const res = await patchrequest("http://localhost:3000/api/member/adddepartment", payload);
+      const res = await patchrequest(`${import.meta.env.VITE_API_URL}/api/member/adddepartment`, payload);
 
       if (res.success) {
         toast.success(`Department '${departmentName}' added successfully!`);

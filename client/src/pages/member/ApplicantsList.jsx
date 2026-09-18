@@ -14,7 +14,7 @@ const ApplicantsList = () => {
   const fetchApplicants = async () => {
     try {
       setLoading(true);
-      const res = await getrequest("http://localhost:3000/api/member/mysociety");
+      const res = await getrequest(`${import.meta.env.VITE_API_URL}/api/member/mysociety`);
       if (res.success && res.society) {
         setSociety(res.society);
       } else {
@@ -44,7 +44,7 @@ const ApplicantsList = () => {
         status: newStatus,
       };
 
-      const res = await patchrequest("http://localhost:3000/api/member/changestatus", payload);
+      const res = await patchrequest(`${import.meta.env.VITE_API_URL}/api/member/changestatus`, payload);
 
       if (res.success) {
         toast.success(`Applicant status updated to ${newStatus}`);

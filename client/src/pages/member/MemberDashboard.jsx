@@ -10,7 +10,7 @@ const MemberDashboard = () => {
   const fetchMySociety = async () => {
     try {
       setLoading(true);
-      const res = await getrequest("http://localhost:3000/api/member/mysociety");
+      const res = await getrequest(`${import.meta.env.VITE_API_URL}/api/member/mysociety`);
       if (res.success && res.society) {
         setSociety(res.society);
       } else {

@@ -17,12 +17,12 @@ const SocietyPage = () => {
   const fetchSocietyAndEnrollments = async () => {
     try {
       setLoading(true);
-      const data = await getrequest(`http://localhost:3000/api/member/displaysociety/${SocietyId}`);
+      const data = await getrequest(`${import.meta.env.VITE_API_URL}/api/member/displaysociety/${SocietyId}`);
       setDetails(data);
 
       // Fetch user's applied societies to check enrollment status
       if (userRole === "user") {
-        const applications = await getrequest("http://localhost:3000/api/user/allappliedsociety");
+        const applications = await getrequest(`${import.meta.env.VITE_API_URL}/api/user/allappliedsociety`);
         if (Array.isArray(applications)) {
           const map = {};
           applications.forEach((app) => {
@@ -54,7 +54,7 @@ const SocietyPage = () => {
         department: dept.departmentName,
       };
 
-      const res = await postrequest("http://localhost:3000/api/user/enrollsociety", payload);
+      const res = await postrequest(`${import.meta.env.VITE_API_URL}/api/user/enrollsociety`, payload);
 
       if (res.success) {
         toast.success(`Successfully enrolled in ${dept.departmentName}!`);

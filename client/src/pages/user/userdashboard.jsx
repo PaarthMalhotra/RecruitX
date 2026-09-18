@@ -53,7 +53,7 @@ const Userdashboard = () => {
   useEffect(() => {
     async function loadData() {
       try {
-        const res = await getrequest("http://localhost:3000/api/member/displayallsociety");
+        const res = await getrequest(`${import.meta.env.VITE_API_URL}/api/member/displayallsociety`);
         setAllSocieties(Array.isArray(res) ? res : []);
       } catch (err) {
         console.error("Failed to fetch societies:", err);

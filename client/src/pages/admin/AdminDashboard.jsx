@@ -12,8 +12,8 @@ const AdminDashboard = () => {
     try {
       setLoading(true);
       const [statsRes, societiesRes] = await Promise.all([
-        getrequest("http://localhost:3000/api/admin/stats"),
-        getrequest("http://localhost:3000/api/member/displayallsociety"),
+        getrequest(`${import.meta.env.VITE_API_URL}/api/admin/stats`),
+        getrequest(`${import.meta.env.VITE_API_URL}/api/member/displayallsociety`),
       ]);
 
       if (statsRes.success) {

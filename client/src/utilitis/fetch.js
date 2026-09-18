@@ -1,10 +1,7 @@
-const BASE_URL = (import.meta.env?.VITE_API_BASE_URL || "http://localhost:3000").replace(/\/$/, "");
+const BASE_URL = (import.meta.env?.VITE_API_URL || import.meta.env?.VITE_API_BASE_URL || "").replace(/\/$/, "");
 
 const resolveUrl = (url) => {
   if (typeof url !== "string") return url;
-  if (url.startsWith("http://localhost:3000")) {
-    return url.replace("http://localhost:3000", BASE_URL);
-  }
   if (url.startsWith("/")) {
     return `${BASE_URL}${url}`;
   }

@@ -16,7 +16,7 @@ const AdminSocieties = () => {
   const fetchSocieties = async () => {
     try {
       setLoading(true);
-      const res = await getrequest("http://localhost:3000/api/member/displayallsociety");
+      const res = await getrequest(`${import.meta.env.VITE_API_URL}/api/member/displayallsociety`);
       if (Array.isArray(res)) {
         setSocieties(res);
       }
@@ -37,7 +37,7 @@ const AdminSocieties = () => {
 
     setIsDeleting(true);
     try {
-      const res = await deleterequest(`http://localhost:3000/api/admin/deletesociety/${deleteTarget._id}`);
+      const res = await deleterequest(`${import.meta.env.VITE_API_URL}/api/admin/deletesociety/${deleteTarget._id}`);
 
       if (res.success || res.Success) {
         toast.success(`Society '${deleteTarget.name}' deleted successfully`);

@@ -16,7 +16,7 @@ const SocietyCard = ({ societies: propSocieties, loading: propLoading }) => {
 
     async function getData() {
       try {
-        const response = await getrequest("http://localhost:3000/api/member/displayallsociety");
+        const response = await getrequest(`${import.meta.env.VITE_API_URL}/api/member/displayallsociety`);
         setData(Array.isArray(response) ? response : []);
       } catch (err) {
         console.error("Failed to load societies:", err);

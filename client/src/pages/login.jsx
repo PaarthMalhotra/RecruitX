@@ -16,7 +16,7 @@ const Login = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    const response = await postrequest("http://localhost:3000/api/login", data);
+    const response = await postrequest(`${import.meta.env.VITE_API_URL}/api/login`, data);
     if (response.verified) {
       dispatch(setRole(response.role));
       toast.success("Login Successful");

@@ -19,7 +19,7 @@ const Enrolled = () => {
     try {
       setLoading(true);
       const appliedSocieties = await getrequest(
-        "http://localhost:3000/api/user/allappliedsociety"
+        `${import.meta.env.VITE_API_URL}/api/user/allappliedsociety`
       );
 
       if (!Array.isArray(appliedSocieties)) {
@@ -32,7 +32,7 @@ const Enrolled = () => {
         appliedSocieties.map(async (application) => {
           try {
             const society = await getrequest(
-              `http://localhost:3000/api/member/displaysociety/${application.SocietyId}`
+              `${import.meta.env.VITE_API_URL}/api/member/displaysociety/${application.SocietyId}`
             );
 
             const department = society?.departments?.find(
@@ -72,7 +72,7 @@ const Enrolled = () => {
 
     setIsWithdrawing(true);
     try {
-      const res = await deleterequest("http://localhost:3000/api/user/deletesociety", {
+      const res = await deleterequest(`${import.meta.env.VITE_API_URL}/api/user/deletesociety`, {
         _id: withdrawTarget.application._id,
         SocietyId: withdrawTarget.application.SocietyId,
         department: withdrawTarget.application.department,

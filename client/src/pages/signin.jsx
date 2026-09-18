@@ -17,7 +17,7 @@ const Signin = () => {
 
   const onSubmit = async (data) => {
     data.role = role;
-    const response = await postrequest("http://localhost:3000/api/signin",data);
+    const response = await postrequest(`${import.meta.env.VITE_API_URL}/api/signin`, data);
     if (response.verified) {
       toast.success("SignIn Successful");
       navigate("/login");
