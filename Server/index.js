@@ -61,6 +61,31 @@ const corsOptions = {
 // 1. CORS middleware must run before body parsers and routes
 app.use(cors(corsOptions));
 
+// Explicit preflight handler for OPTIONS requests
+app.use((req, res, next) => {
+  if (req.method === "OPTIONS") {
+    const origin = req.headers.origin;
+    if (origin) {
+      const cleanOrigin = origin.trim().replace(/\/$/, "");
+      if (
+        allowedOrigins.includes(cleanOrigin) ||
+        allowedOrigins.includes(origin) ||
+        /^https:\/\/recruitx-client.*\.vercel\.app$/.test(cleanOrigin)
+      ) {
+        res.header("Access-Control-Allow-Origin", origin);
+        res.header("Access-Control-Allow-Credentials", "true");
+        res.header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+        res.header(
+          "Access-Control-Allow-Headers",
+          "Content-Type,Authorization,Cookie,X-Requested-With,Accept,Origin"
+        );
+        return res.sendStatus(200);
+      }
+    }
+  }
+  next();
+});
+
 // 2. Body parsing and cookies
 app.use(express.json());
 app.use(cookieParser());
