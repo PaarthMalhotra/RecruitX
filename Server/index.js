@@ -62,6 +62,17 @@ app.get('/', (req, res) => {
   res.send("RecruitX API is running");
 });
 
+// Test endpoint for Postman
+app.all('/api/test', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "everything working perfect",
+    timestamp: new Date().toISOString(),
+    port: port,
+    environment: process.env.NODE_ENV || "development"
+  });
+});
+
 // Logout
 app.post('/api/logout', (req, res) => {
   const isProduction = process.env.NODE_ENV === "production";
