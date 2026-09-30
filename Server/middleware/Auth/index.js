@@ -21,20 +21,8 @@ export const protectedRoute = async (req, res, next) => {
 };
 
 export const checkToken = (req, res, next) => {
-    try {
-        if (req.cookies.token) {
-            return res.status(403).json({
-                success: false,
-                error: "Already logged in"
-            });
-        }
-        next();
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            error: "Internal server error"
-        });
-    }
+    // Allow login and signin requests to proceed and establish or refresh session
+    next();
 };
 
 export const checkAdmin = async (req, res, next) => {

@@ -2,19 +2,26 @@ import Cookies from "js-cookie";
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
+const checkIsLoggedIn = (state) => {
+    const isAuth = state.user?.isAuthenticated;
+    const hasRole = !!(state.user?.role || (typeof window !== "undefined" && (localStorage.getItem("recruitx_role") || localStorage.getItem("recruitech_role"))));
+    const hasCookie = typeof window !== "undefined" && !!Cookies.get("token");
+    return !!(isAuth || hasRole || hasCookie);
+};
+
 export const ProtectedRoute = ({ children }) => {
-    const token = Cookies.get("token");
-    if (!token) {
+    const isLoggedIn = useSelector(checkIsLoggedIn);
+    if (!isLoggedIn) {
         return <Navigate to="/login" replace />;
     }
     return children;
 };
 
 export const GuestRoute = ({ children }) => {
-    const token = Cookies.get("token");
+    const isLoggedIn = useSelector(checkIsLoggedIn);
     const userRole = useSelector((state) => state.user?.role) || (typeof window !== "undefined" ? (localStorage.getItem("recruitx_role") || localStorage.getItem("recruitech_role")) : null);
 
-    if (token) {
+    if (isLoggedIn) {
         if (userRole === "admin") {
             return <Navigate to="/home/admindashboard" replace />;
         }
@@ -28,10 +35,10 @@ export const GuestRoute = ({ children }) => {
 };
 
 export const RoleRoute = ({ allowedRoles, children }) => {
-    const token = Cookies.get("token");
+    const isLoggedIn = useSelector(checkIsLoggedIn);
     const userRole = useSelector((state) => state.user?.role) || (typeof window !== "undefined" ? (localStorage.getItem("recruitx_role") || localStorage.getItem("recruitech_role")) : null) || "user";
 
-    if (!token) {
+    if (!isLoggedIn) {
         return <Navigate to="/login" replace />;
     }
 

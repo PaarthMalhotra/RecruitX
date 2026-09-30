@@ -39,7 +39,7 @@ app.use((req, res, next) => {
     const isAllowed =
       allowedOrigins.includes(cleanOrigin) ||
       allowedOrigins.includes(origin) ||
-      /^https:\/\/recruitx-client.*\.vercel\.app$/.test(cleanOrigin);
+      cleanOrigin.endsWith(".vercel.app");
 
     if (isAllowed) {
       res.setHeader("Access-Control-Allow-Origin", origin);
@@ -93,6 +93,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
   console.log(`RecruitX server listening on port ${port}`);
 });
