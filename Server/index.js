@@ -7,14 +7,16 @@ import router from "./Routes/index.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
-connectDb();
+// Connect to DB with error catching
+connectDb().catch((err) => {
+  console.error("Database connection failed:", err);
+});
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.set("trust proxy", 1);
 
-// Allowed origins for CORS (production, local dev, and environment variable)
 const allowedOrigins = [
   "https://recruitx-client.vercel.app",
   "http://localhost:5173",
@@ -28,61 +30,34 @@ if (process.env.CLIENT_URL) {
   }
 }
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl, server-to-server)
-    if (!origin) return callback(null, true);
+// 1. Explicitly intercept ALL OPTIONS requests first before any routing
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
 
+  if (origin) {
     const cleanOrigin = origin.trim().replace(/\/$/, "");
-    if (
+    const isAllowed =
       allowedOrigins.includes(cleanOrigin) ||
       allowedOrigins.includes(origin) ||
-      /^https:\/\/recruitx-client.*\.vercel\.app$/.test(cleanOrigin)
-    ) {
-      return callback(null, true);
-    }
+      /^https:\/\/recruitx-client.*\.vercel\.app$/.test(cleanOrigin);
 
-    return callback(null, false);
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: [
-    "Content-Type",
-    "Authorization",
-    "Cookie",
-    "X-Requested-With",
-    "Accept",
-    "Origin",
-  ],
-  exposedHeaders: ["Set-Cookie"],
-  optionsSuccessStatus: 200,
-};
-
-// 1. CORS middleware must run before body parsers and routes
-app.use(cors(corsOptions));
-
-// Explicit preflight handler for OPTIONS requests
-app.use((req, res, next) => {
-  if (req.method === "OPTIONS") {
-    const origin = req.headers.origin;
-    if (origin) {
-      const cleanOrigin = origin.trim().replace(/\/$/, "");
-      if (
-        allowedOrigins.includes(cleanOrigin) ||
-        allowedOrigins.includes(origin) ||
-        /^https:\/\/recruitx-client.*\.vercel\.app$/.test(cleanOrigin)
-      ) {
-        res.header("Access-Control-Allow-Origin", origin);
-        res.header("Access-Control-Allow-Credentials", "true");
-        res.header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
-        res.header(
-          "Access-Control-Allow-Headers",
-          "Content-Type,Authorization,Cookie,X-Requested-With,Accept,Origin"
-        );
-        return res.sendStatus(200);
-      }
+    if (isAllowed) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+      res.setHeader("Access-Control-Allow-Credentials", "true");
+      res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+      res.setHeader(
+        "Access-Control-Allow-Headers",
+        "Content-Type, Authorization, Cookie, X-Requested-With, Accept, Origin"
+      );
+      res.setHeader("Access-Control-Expose-Headers", "Set-Cookie");
     }
   }
+
+  // Preflight ends here
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   next();
 });
 
@@ -92,7 +67,7 @@ app.use(cookieParser());
 
 // 3. Health check
 app.get('/', (req, res) => {
-    res.send("RecruitX API is running");
+  res.send("RecruitX API is running");
 });
 
 // 4. Logout handler
@@ -109,11 +84,15 @@ app.post('/api/logout', (req, res) => {
 // 5. API routes
 app.use('/api', router);
 
-// Only listen on port when running locally / standalone, not on Vercel serverless
-if (!process.env.VERCEL) {
-  app.listen(port, () => {
-    console.log(`RecruitX server listening on port ${port}`);
+// Error handler to guarantee JSON and CORS headers on runtime failure
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", err);
+  res.status(500).json({
+    success: false,
+    message: err.message || "Internal server error",
   });
-}
+});
 
-export default app;
+app.listen(port, () => {
+  console.log(`RecruitX server listening on port ${port}`);
+});
