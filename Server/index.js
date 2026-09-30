@@ -7,7 +7,6 @@ import router from "./Routes/index.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
-// Connect to DB with error catching
 connectDb().catch((err) => {
   console.error("Database connection failed:", err);
 });
@@ -30,47 +29,40 @@ if (process.env.CLIENT_URL) {
   }
 }
 
-// 1. Explicitly intercept ALL OPTIONS requests first before any routing
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
+// ✅ Standard CORS setup
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
 
-  if (origin) {
     const cleanOrigin = origin.trim().replace(/\/$/, "");
     const isAllowed =
       allowedOrigins.includes(cleanOrigin) ||
-      allowedOrigins.includes(origin) ||
       cleanOrigin.endsWith(".vercel.app");
 
     if (isAllowed) {
-      res.setHeader("Access-Control-Allow-Origin", origin);
-      res.setHeader("Access-Control-Allow-Credentials", "true");
-      res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
-      res.setHeader(
-        "Access-Control-Allow-Headers",
-        "Content-Type, Authorization, Cookie, X-Requested-With, Accept, Origin"
-      );
-      res.setHeader("Access-Control-Expose-Headers", "Set-Cookie");
+      callback(null, true);
+    } else {
+      console.warn("CORS blocked:", origin);
+      callback(new Error("Not allowed by CORS"));
     }
-  }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "Cookie", "X-Requested-With", "Accept", "Origin"],
+  exposedHeaders: ["Set-Cookie"],
+}));
 
-  // Preflight ends here
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-
-  next();
-});
-
-// 2. Body parsing and cookies
+// Body parsing
 app.use(express.json());
 app.use(cookieParser());
 
-// 3. Health check
+// Health check
 app.get('/', (req, res) => {
   res.send("RecruitX API is running");
 });
 
-// 4. Logout handler
+// Logout
 app.post('/api/logout', (req, res) => {
   const isProduction = process.env.NODE_ENV === "production";
   res.clearCookie("token", {
@@ -81,10 +73,10 @@ app.post('/api/logout', (req, res) => {
   res.status(200).json({ success: true, message: "Logged out successfully" });
 });
 
-// 5. API routes
+// API routes
 app.use('/api', router);
 
-// Error handler to guarantee JSON and CORS headers on runtime failure
+// Error handler
 app.use((err, req, res, next) => {
   console.error("Unhandled error:", err);
   res.status(500).json({
