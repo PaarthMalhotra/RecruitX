@@ -25,12 +25,6 @@ const navConfig = {
   ],
 };
 
-const guestNav = [
-  { label: "Home", path: "/" },
-  { label: "Features", path: "/#features" },
-  { label: "About", path: "/#about" },
-];
-
 const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -48,10 +42,6 @@ const Navbar = () => {
   const role =
     userState?.role || localStorage.getItem("recruitx_role") || "user";
   const userDetails = userState?.details;
-
-  const currentNav = isAuthenticated
-    ? navConfig[role] || navConfig.user
-    : guestNav;
 
   // Click outside listener for profile menu
   useEffect(() => {
@@ -76,6 +66,29 @@ const Navbar = () => {
     navigate("/login");
   };
 
+  const handleHomeClick = (e) => {
+    e.preventDefault();
+    if (location.pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      navigate("/");
+    }
+    setMobileMenuOpen(false);
+  };
+
+  const handleAboutClick = (e) => {
+    e.preventDefault();
+    if (location.pathname === "/") {
+      const el = document.getElementById("about");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      navigate("/#about");
+    }
+    setMobileMenuOpen(false);
+  };
+
   const isActive = (path) => {
     if (path === "/" && location.pathname === "/") return true;
     if (path !== "/" && (location.pathname === path || location.pathname.startsWith(path + "/"))) {
@@ -91,7 +104,7 @@ const Navbar = () => {
         <div className="flex items-center gap-3">
           <Link
             to={isAuthenticated ? "/home" : "/"}
-            className="text-xl sm:text-2xl font-bold tracking-tight text-black select-none"
+            className="text-xl sm:text-2xl font-bold tracking-tight text-black select-none outline-none"
           >
             RecruitX
           </Link>
@@ -100,22 +113,40 @@ const Navbar = () => {
         {/* Middle: Floating Container for Navigation Links */}
         <div className="hidden md:flex items-center justify-center">
           <div className="bg-[#fafafa] border border-black/5 rounded-[12px] px-2 py-1 shadow-xs flex items-center gap-1">
-            {currentNav.map((item) => {
-              const active = isActive(item.path);
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`px-3.5 py-1.5 rounded-[9px] text-xs sm:text-sm font-medium transition-colors duration-150 ${
-                    active
-                      ? "bg-black/10 text-black font-semibold"
-                      : "text-gray-700 hover:text-black hover:bg-black/5"
-                  }`}
+            {isAuthenticated ? (
+              (navConfig[role] || navConfig.user).map((item) => {
+                const active = isActive(item.path);
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={`px-3.5 py-1.5 rounded-[9px] text-xs sm:text-sm font-medium transition-colors duration-150 outline-none ${
+                      active
+                        ? "bg-black/10 text-black font-semibold"
+                        : "text-gray-700 hover:text-black hover:bg-black/5"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })
+            ) : (
+              // Exactly 2 guest items: Home and About
+              <>
+                <button
+                  onClick={handleHomeClick}
+                  className="px-3.5 py-1.5 rounded-[9px] text-xs sm:text-sm font-medium transition-colors duration-150 outline-none text-gray-700 hover:text-black hover:bg-black/5 cursor-pointer"
                 >
-                  {item.label}
-                </Link>
-              );
-            })}
+                  Home
+                </button>
+                <button
+                  onClick={handleAboutClick}
+                  className="px-3.5 py-1.5 rounded-[9px] text-xs sm:text-sm font-medium transition-colors duration-150 outline-none text-gray-700 hover:text-black hover:bg-black/5 cursor-pointer"
+                >
+                  About
+                </button>
+              </>
+            )}
           </div>
         </div>
 
@@ -124,7 +155,7 @@ const Navbar = () => {
           {!isAuthenticated ? (
             <Link
               to="/login"
-              className="px-4 py-2 bg-black text-white text-xs sm:text-sm font-medium rounded-[11px] border border-black hover:bg-white hover:text-black transition-colors duration-200 cursor-pointer"
+              className="px-4 py-2 bg-black text-white text-xs sm:text-sm font-medium rounded-[11px] border border-black hover:bg-white hover:text-black transition-colors duration-200 cursor-pointer outline-none"
             >
               Login
             </Link>
@@ -132,7 +163,7 @@ const Navbar = () => {
             <div className="relative" ref={profileMenuRef}>
               <button
                 onClick={() => setProfileOpen(!profileOpen)}
-                className="px-4 py-2 bg-black text-white text-xs sm:text-sm font-medium rounded-[11px] border border-black hover:bg-white hover:text-black transition-colors duration-200 flex items-center gap-2 cursor-pointer"
+                className="px-4 py-2 bg-black text-white text-xs sm:text-sm font-medium rounded-[11px] border border-black hover:bg-white hover:text-black transition-colors duration-200 flex items-center gap-2 cursor-pointer outline-none"
               >
                 <span>
                   {userDetails?.f_name
@@ -160,7 +191,7 @@ const Navbar = () => {
                     <Link
                       to="/home/profile"
                       onClick={() => setProfileOpen(false)}
-                      className="block px-3 py-1.5 text-xs text-gray-700 hover:bg-black/5 rounded-lg font-medium transition"
+                      className="block px-3 py-1.5 text-xs text-gray-700 hover:bg-black/5 rounded-lg font-medium transition outline-none"
                     >
                       Profile Settings
                     </Link>
@@ -168,7 +199,7 @@ const Navbar = () => {
                   <div className="pt-1 border-t border-gray-100">
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-3 py-1.5 text-xs text-red-600 hover:bg-red-50 rounded-lg font-medium transition cursor-pointer"
+                      className="w-full text-left px-3 py-1.5 text-xs text-red-600 hover:bg-red-50 rounded-lg font-medium transition cursor-pointer outline-none"
                     >
                       Log Out
                     </button>
@@ -181,7 +212,7 @@ const Navbar = () => {
           {/* Mobile hamburger menu toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-xl border border-black/10 text-gray-800 hover:bg-black/5 focus:outline-none"
+            className="md:hidden p-2 rounded-xl border border-black/10 text-gray-800 hover:bg-black/5 focus:outline-none outline-none cursor-pointer"
             aria-label="Toggle menu"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -194,21 +225,38 @@ const Navbar = () => {
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
         <div className="md:hidden mt-3 pt-3 border-t border-gray-100 flex flex-col gap-1">
-          {currentNav.map((item) => {
-            const active = isActive(item.path);
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => setMobileMenuOpen(false)}
-                className={`px-3 py-2 rounded-lg text-xs font-medium ${
-                  active ? "bg-black/10 text-black font-bold" : "text-gray-700 hover:bg-black/5"
-                }`}
+          {isAuthenticated ? (
+            (navConfig[role] || navConfig.user).map((item) => {
+              const active = isActive(item.path);
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`px-3 py-2 rounded-lg text-xs font-medium outline-none ${
+                    active ? "bg-black/10 text-black font-bold" : "text-gray-700 hover:bg-black/5"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })
+          ) : (
+            <>
+              <button
+                onClick={handleHomeClick}
+                className="w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-black/5 outline-none cursor-pointer"
               >
-                {item.label}
-              </Link>
-            );
-          })}
+                Home
+              </button>
+              <button
+                onClick={handleAboutClick}
+                className="w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-black/5 outline-none cursor-pointer"
+              >
+                About
+              </button>
+            </>
+          )}
         </div>
       )}
     </nav>

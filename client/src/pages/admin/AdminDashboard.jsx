@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getrequest } from "../../utilitis/fetch";
+import { getrequest, postrequest } from "../../utilitis/fetch";
 import { toast } from "sonner";
 import {
   Bar,
@@ -42,6 +42,13 @@ const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // College addition modal state (Admin feature)
+  const [showAddCollege, setShowAddCollege] = useState(false);
+  const [collegeName, setCollegeName] = useState("");
+  const [collegeShortCode, setCollegeShortCode] = useState("");
+  const [collegeCity, setCollegeCity] = useState("");
+  const [submittingCollege, setSubmittingCollege] = useState(false);
+
   // Single aggregated endpoint call (A4 rule: 1 call per dashboard, no spamming)
   const fetchAdminStats = async () => {
     try {
@@ -61,6 +68,39 @@ const AdminDashboard = () => {
   useEffect(() => {
     fetchAdminStats();
   }, []);
+
+  const handleCreateCollege = async (e) => {
+    e.preventDefault();
+    if (!collegeName.trim() || !collegeShortCode.trim()) {
+      toast.error("College name and short code are required");
+      return;
+    }
+
+    setSubmittingCollege(true);
+    try {
+      const res = await postrequest(`${import.meta.env.VITE_API_URL}/api/admin/colleges`, {
+        name: collegeName.trim(),
+        shortCode: collegeShortCode.trim().toUpperCase(),
+        city: collegeCity.trim(),
+      });
+
+      if (res && res.success) {
+        toast.success(`College "${res.college.name}" added successfully!`);
+        setShowAddCollege(false);
+        setCollegeName("");
+        setCollegeShortCode("");
+        setCollegeCity("");
+        // Refresh admin stats to reflect the new college
+        fetchAdminStats();
+      } else {
+        toast.error(res?.message || "Failed to add college");
+      }
+    } catch (err) {
+      toast.error("Error connecting to server");
+    } finally {
+      setSubmittingCollege(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -108,12 +148,20 @@ const AdminDashboard = () => {
           </p>
         </div>
 
-        <Link
-          to="/home/admin/societies"
-          className="self-start sm:self-auto px-4 py-2 bg-black text-white font-medium rounded-[11px] border border-black hover:bg-white hover:text-black transition-colors duration-200 text-xs sm:text-sm cursor-pointer"
-        >
-          Manage All Societies →
-        </Link>
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={() => setShowAddCollege(true)}
+            className="px-4 py-2 bg-black text-white font-medium rounded-[11px] border border-black hover:bg-white hover:text-black transition-colors duration-200 text-xs sm:text-sm cursor-pointer outline-none"
+          >
+            + Add College
+          </button>
+          <Link
+            to="/home/admin/societies"
+            className="px-4 py-2 bg-white text-black font-medium rounded-[11px] border border-black/15 hover:border-black transition-colors duration-200 text-xs sm:text-sm cursor-pointer outline-none"
+          >
+            Manage All Societies →
+          </Link>
+        </div>
       </div>
 
       {/* B7: 3 Summary Cards - TOTAL COLLEGES, TOTAL SOCIETIES, TOTAL APPLICANTS */}
@@ -277,6 +325,84 @@ const AdminDashboard = () => {
           )}
         </div>
       </div>
+
+      {/* Add College Modal (Admin feature requested) */}
+      {showAddCollege && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in">
+          <div className="bg-white rounded-2xl border border-black/10 shadow-2xl max-w-md w-full p-6 space-y-4">
+            <div>
+              <h3 className="text-lg font-bold text-black">
+                Register New College
+              </h3>
+              <p className="text-xs text-gray-500 mt-1">
+                Added colleges immediately reflect in the registration dropdown and profile selector for students and society members.
+              </p>
+            </div>
+
+            <form onSubmit={handleCreateCollege} className="space-y-3.5">
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  Full College Name *
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Indian Institute of Technology Madras"
+                  value={collegeName}
+                  onChange={(e) => setCollegeName(e.target.value)}
+                  className="w-full px-3.5 py-2 rounded-xl border border-black/15 text-xs text-black focus:outline-none focus:border-black transition"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                    Short Code / Abbr *
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. IITM"
+                    value={collegeShortCode}
+                    onChange={(e) => setCollegeShortCode(e.target.value)}
+                    className="w-full px-3.5 py-2 rounded-xl border border-black/15 text-xs text-black uppercase focus:outline-none focus:border-black transition"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                    City / Location
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Chennai"
+                    value={collegeCity}
+                    onChange={(e) => setCollegeCity(e.target.value)}
+                    className="w-full px-3.5 py-2 rounded-xl border border-black/15 text-xs text-black focus:outline-none focus:border-black transition"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-gray-100">
+                <button
+                  type="button"
+                  onClick={() => setShowAddCollege(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-medium text-gray-700 hover:bg-gray-100 cursor-pointer outline-none"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submittingCollege}
+                  className="px-4 py-2 rounded-[10px] text-xs font-semibold bg-black text-white border border-black hover:bg-white hover:text-black transition-colors duration-200 cursor-pointer disabled:opacity-50 outline-none"
+                >
+                  {submittingCollege ? "Adding..." : "Add College"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

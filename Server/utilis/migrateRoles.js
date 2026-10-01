@@ -24,19 +24,19 @@ export async function runMigration() {
 
     const db = mongoose.connection.db;
 
+    // Verify colleges have been seeded first. Must fail with clear error if unseeded.
+    const defaultCollege = await College.findOne({ shortCode: "NSUT" });
+    if (!defaultCollege) {
+      console.error(
+        "\n[Migration Error] Colleges have not been seeded yet.\n" +
+        "Please run 'npm run seed' first to initialize the College collection before running the migration.\n"
+      );
+      process.exit(1);
+    }
+
     // Check if legacy userprofiles collection exists
     const collections = await db.listCollections().toArray();
     const collectionNames = collections.map((c) => c.name);
-
-    let defaultCollege = await College.findOne({ shortCode: "NSUT" });
-    if (!defaultCollege) {
-      defaultCollege = await College.create({
-        name: "Netaji Subhas University of Technology",
-        shortCode: "NSUT",
-        city: "New Delhi",
-      });
-      console.log(`Created default NSUT college: ${defaultCollege._id}`);
-    }
 
     if (!collectionNames.includes("userprofiles")) {
       console.log("No legacy 'userprofiles' collection found. Checking if any users collection needs role splitting...");

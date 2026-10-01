@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Safe initialization: avoids crash when RESEND_API_KEY is not set in local/test environments
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 /**
  * Sends a notification email. Never throws — failures are logged
@@ -13,19 +14,28 @@ const resend = new Resend(process.env.RESEND_API_KEY);
  */
 export async function sendNotificationEmail({ to, subject, html }) {
   try {
-    if (!process.env.RESEND_API_KEY) {
-      console.warn("RESEND_API_KEY not set — skipping email to", to);
+    if (!resend) {
+      console.warn("[Resend Warning] RESEND_API_KEY not configured — skipping email to", to);
       return;
     }
-    await resend.emails.send({
-      from: "RecruitX <onboarding@resend.dev>",
+
+    const fromEmail = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+
+    const { data, error } = await resend.emails.send({
+      from: `RecruitX <${fromEmail}>`,
       to,
       subject,
       html,
     });
-    console.log(`Email sent to ${to}: ${subject}`);
+
+    if (error) {
+      console.warn(`[Resend Warning] Failed to send email to ${to}:`, error.message || error);
+      return;
+    }
+
+    console.log(`[Resend Success] Email sent to ${to}: ${subject}`);
   } catch (err) {
-    console.error("Email send failed:", err.message || err);
+    console.warn("[Resend Warning] Email send unexpected exception:", err.message || err);
     // Intentionally swallowed — email failure must never break the action
   }
 }

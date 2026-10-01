@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const LandingPage = () => {
   return (
-    <div className="min-h-screen w-full bg-[#fcfcfc] flex flex-col font-sans text-gray-900">
+    <div className="min-h-screen w-full bg-[#fcfcfc] flex flex-col font-sans text-gray-900 scroll-smooth">
       {/* Floating Navbar */}
       <header className="w-full max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-2">
         <Navbar />
@@ -22,24 +22,18 @@ const LandingPage = () => {
           A modern recruitment platform empowering colleges and student societies to run organized, multi-round recruitment drives in one streamlined workspace.
         </p>
 
-        {/* Call to action buttons */}
-        <div className="mt-8 flex flex-col sm:flex-row items-center gap-3.5">
-          <Link
-            to="/signin"
-            className="w-full sm:w-auto px-6 py-3 bg-black text-white text-sm font-semibold rounded-[12px] border border-black hover:bg-white hover:text-black transition-colors duration-200 cursor-pointer"
-          >
-            Get Started Free
-          </Link>
+        {/* Call to action: "Get Started Free" removed as requested */}
+        <div className="mt-8 flex items-center justify-center">
           <Link
             to="/login"
-            className="w-full sm:w-auto px-6 py-3 bg-white text-black text-sm font-semibold rounded-[12px] border border-black/15 hover:border-black transition-colors duration-200 cursor-pointer"
+            className="px-6 py-3 bg-black text-white text-sm font-semibold rounded-[12px] border border-black hover:bg-white hover:text-black transition-colors duration-200 cursor-pointer outline-none"
           >
             Sign In to Account
           </Link>
         </div>
 
-        {/* 3. Exactly 3 Feature Cards */}
-        <div id="features" className="mt-20 sm:mt-24 w-full grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+        {/* 3. Exactly 3 Feature Cards (section target for "About" scroll) */}
+        <div id="about" className="mt-20 sm:mt-24 w-full grid grid-cols-1 md:grid-cols-3 gap-6 text-left scroll-mt-24">
           {/* Feature Card 1 */}
           <div className="p-7 rounded-2xl bg-white border border-black/10 shadow-xs flex flex-col justify-between">
             <div>
