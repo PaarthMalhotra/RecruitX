@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { getModelByRole } from "../../utilis/getModelByRole.js";
+import { College } from "../../Schema/CollegeSchema.js"; // Ensures College model is registered
 
 export const protectedRoute = async (req, res, next) => {
   try {
@@ -16,7 +17,14 @@ export const protectedRoute = async (req, res, next) => {
     }
 
     const Model = getModelByRole(decoded.role);
-    const account = await Model.findById(decoded._id).select("-password").populate("college");
+    let query = Model.findById(decoded._id).select("-password");
+
+    // Only populate college if the role schema actually has a college field
+    if (decoded.role !== "admin") {
+      query = query.populate("college");
+    }
+
+    const account = await query;
     if (!account) {
       return res.status(401).json({ success: false, error: "User account not found" });
     }

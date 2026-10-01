@@ -93,7 +93,7 @@ const AdminDashboard = () => {
         // Refresh admin stats to reflect the new college
         fetchAdminStats();
       } else {
-        toast.error(res?.message || "Failed to add college");
+        toast.error(res?.message || res?.error || "Failed to add college");
       }
     } catch (err) {
       toast.error("Error connecting to server");

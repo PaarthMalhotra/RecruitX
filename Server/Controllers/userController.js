@@ -1,5 +1,6 @@
 import { User } from "../Schema/UserSchema.js";
 import { Society } from "../Schema/SocietySchema.js";
+import { College } from "../Schema/CollegeSchema.js";
 import { getModelByRole } from "../utilis/getModelByRole.js";
 
 /**
@@ -16,14 +17,19 @@ export const allappliedSociety = async (req, res) => {
 
 /**
  * Returns details of the currently authenticated account (User, Member, or Admin)
- * with college populated. Used by Avatar, profile, etc.
+ * with college populated when available. Used by Avatar, profile, etc.
  */
 export const userDetails = async (req, res) => {
   try {
     const Model = getModelByRole(req.user.role);
-    const details = await Model.findById(req.user._id)
-      .select("-password")
-      .populate("college", "name shortCode city");
+    let query = Model.findById(req.user._id).select("-password");
+
+    // Only populate college if the role schema has a college field
+    if (req.user.role !== "admin") {
+      query = query.populate("college", "name shortCode city");
+    }
+
+    const details = await query;
     res.status(200).json({ success: true, details });
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
