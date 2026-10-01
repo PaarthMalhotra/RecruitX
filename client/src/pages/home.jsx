@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 
 const Home = () => {
   return (
-    <div className="min-h-screen w-full bg-[#fcfcfc] flex flex-col font-sans text-gray-900">
+    <div className="min-h-screen w-full bg-page flex flex-col font-sans text-m3-text">
       <header className="w-full max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-2">
         <Navbar />
       </header>

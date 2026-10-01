@@ -119,7 +119,7 @@ export const ChartTooltipContent = React.forwardRef(
     return (
       <div
         ref={ref}
-        className={`grid min-w-[8rem] items-start gap-1.5 rounded-xl border border-black/10 bg-white px-3 py-2 text-xs shadow-md ${className}`}
+        className={`grid min-w-[8rem] items-start gap-1.5 rounded-xl border border-m3-border/60 bg-surface px-3 py-2 text-xs shadow-md text-m3-text ${className}`}
       >
         {!nestLabel ? tooltipLabel : null}
         <div className="grid gap-1.5">
@@ -131,7 +131,7 @@ export const ChartTooltipContent = React.forwardRef(
             return (
               <div
                 key={item.dataKey || index}
-                className="flex w-full flex-wrap items-center gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-gray-500"
+                className="flex w-full flex-wrap items-center gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-m3-muted"
               >
                 {formatter && item?.value !== undefined && item.name ? (
                   formatter(item.value, item.name, item, index, item.payload)
@@ -147,11 +147,11 @@ export const ChartTooltipContent = React.forwardRef(
                       />
                     )}
                     <div className="flex flex-1 justify-between leading-none items-center gap-2">
-                      <span className="text-gray-600 font-medium">
+                      <span className="text-m3-muted font-medium">
                         {itemConfig?.label || item.name}
                       </span>
                       {item.value !== undefined && (
-                        <span className="font-mono font-bold text-gray-900">
+                        <span className="font-mono font-bold text-m3-text">
                           {item.value.toLocaleString()}
                         </span>
                       )}

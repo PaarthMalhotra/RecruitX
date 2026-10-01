@@ -9,19 +9,14 @@ const Signin = () => {
   const [role, setRole] = useState("user");
   const [colleges, setColleges] = useState([]);
   const [loadingColleges, setLoadingColleges] = useState(true);
-  const [collegeSearch, setCollegeSearch] = useState("");
 
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm({
     shouldUnregister: true,
   });
-
-  const selectedCollege = watch("college");
 
   useEffect(() => {
     const fetchColleges = async () => {
@@ -57,46 +52,36 @@ const Signin = () => {
     }
   };
 
-  const filteredColleges = colleges.filter((c) => {
-    const q = collegeSearch.toLowerCase().trim();
-    if (!q) return true;
-    return (
-      c.name?.toLowerCase().includes(q) ||
-      c.shortCode?.toLowerCase().includes(q) ||
-      c.city?.toLowerCase().includes(q)
-    );
-  });
-
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#fcfcfc] px-4 py-12 font-sans text-gray-900">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-page px-4 py-12 font-sans text-m3-text">
       <div className="w-full max-w-md mb-6 flex items-center justify-between">
         <Link
           to="/"
-          className="text-xs font-semibold text-gray-500 hover:text-black transition"
+          className="text-xs font-semibold text-primary hover:underline transition outline-none"
         >
           ← Back to RecruitX
         </Link>
       </div>
 
-      <div className="w-full max-w-md bg-white rounded-2xl border border-black/10 p-8 shadow-xs space-y-6">
+      <div className="w-full max-w-md bg-surface rounded-[16px] border border-m3-border/80 p-8 shadow-xs space-y-6">
         <div className="text-center space-y-1">
-          <Link to="/" className="text-3xl font-extrabold tracking-tight text-black inline-block">
+          <Link to="/" className="text-3xl font-extrabold tracking-tight text-m3-text inline-block outline-none">
             RecruitX
           </Link>
-          <h2 className="text-xl font-bold text-gray-950 mt-2">Create an account</h2>
-          <p className="text-xs text-gray-500">
+          <h2 className="text-xl font-bold text-m3-text mt-2">Create an account</h2>
+          <p className="text-xs text-m3-muted">
             Join the recruitment network for your college
           </p>
         </div>
 
         {/* Role Pill Switcher */}
-        <div className="flex justify-center p-1 rounded-xl bg-[#fafafa] border border-black/5 gap-1">
+        <div className="flex justify-center p-1 rounded-full bg-field border border-m3-border/40 gap-1">
           <button
             type="button"
-            className={`flex-1 py-1.5 px-3 text-xs font-medium rounded-lg transition-colors cursor-pointer ${
+            className={`flex-1 py-1.5 px-3 text-xs font-medium rounded-full transition-colors cursor-pointer outline-none ${
               role === "user"
-                ? "bg-black text-white font-semibold shadow-xs"
-                : "text-gray-600 hover:text-black hover:bg-black/5"
+                ? "bg-primary text-white font-semibold shadow-xs"
+                : "text-m3-muted hover:text-m3-text"
             }`}
             onClick={() => setRole("user")}
           >
@@ -104,10 +89,10 @@ const Signin = () => {
           </button>
           <button
             type="button"
-            className={`flex-1 py-1.5 px-3 text-xs font-medium rounded-lg transition-colors cursor-pointer ${
+            className={`flex-1 py-1.5 px-3 text-xs font-medium rounded-full transition-colors cursor-pointer outline-none ${
               role === "member"
-                ? "bg-black text-white font-semibold shadow-xs"
-                : "text-gray-600 hover:text-black hover:bg-black/5"
+                ? "bg-primary text-white font-semibold shadow-xs"
+                : "text-m3-muted hover:text-m3-text"
             }`}
             onClick={() => setRole("member")}
           >
@@ -115,10 +100,10 @@ const Signin = () => {
           </button>
           <button
             type="button"
-            className={`flex-1 py-1.5 px-3 text-xs font-medium rounded-lg transition-colors cursor-pointer ${
+            className={`flex-1 py-1.5 px-3 text-xs font-medium rounded-full transition-colors cursor-pointer outline-none ${
               role === "admin"
-                ? "bg-black text-white font-semibold shadow-xs"
-                : "text-gray-600 hover:text-black hover:bg-black/5"
+                ? "bg-primary text-white font-semibold shadow-xs"
+                : "text-m3-muted hover:text-m3-text"
             }`}
             onClick={() => setRole("admin")}
           >
@@ -130,87 +115,85 @@ const Signin = () => {
           {/* Name Fields */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                First Name
+              <label className="block text-xs font-medium text-m3-muted mb-1">
+                First Name *
               </label>
               <input
                 type="text"
                 placeholder="John"
                 {...register("f_name", { required: "First name is required" })}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black placeholder:text-gray-400 focus:outline-none focus:border-black transition"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-m3-border text-sm text-m3-text placeholder:text-m3-muted/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition bg-surface"
               />
               {errors.f_name && (
-                <p className="mt-1 text-xs text-red-600">{errors.f_name.message}</p>
+                <p className="mt-1 text-xs text-m3-danger">{errors.f_name.message}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
+              <label className="block text-xs font-medium text-m3-muted mb-1">
                 Last Name
               </label>
               <input
                 type="text"
                 placeholder="Doe"
                 {...register("l_name")}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black placeholder:text-gray-400 focus:outline-none focus:border-black transition"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-m3-border text-sm text-m3-text placeholder:text-m3-muted/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition bg-surface"
               />
             </div>
           </div>
 
           {/* Email */}
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
-              Email Address
+            <label className="block text-xs font-medium text-m3-muted mb-1">
+              Email Address *
             </label>
             <input
               type="email"
               placeholder="name@university.edu"
               {...register("email", { required: "Email is required" })}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black placeholder:text-gray-400 focus:outline-none focus:border-black transition"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-m3-border text-sm text-m3-text placeholder:text-m3-muted/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition bg-surface"
             />
             {errors.email && (
-              <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>
+              <p className="mt-1 text-xs text-m3-danger">{errors.email.message}</p>
             )}
           </div>
 
-          {/* Predefined Searchable College Dropdown (A1/B3 requirement) */}
+          {/* Predefined Searchable College Dropdown */}
           {role !== "admin" && (
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Select College / University
+              <label className="block text-xs font-medium text-m3-muted mb-1">
+                Select College / University *
               </label>
               {loadingColleges ? (
-                <div className="h-10 bg-gray-100 rounded-xl animate-pulse flex items-center px-3 text-xs text-gray-400">
+                <div className="h-10 bg-field rounded-xl animate-pulse flex items-center px-3 text-xs text-m3-muted">
                   Loading colleges...
                 </div>
               ) : (
-                <div className="space-y-1.5">
-                  <select
-                    {...register("college", {
-                      required: role !== "admin" ? "Please select your college" : false,
-                    })}
-                    className="w-full px-3 py-2.5 rounded-xl border border-black/15 text-sm text-black bg-white focus:outline-none focus:border-black transition cursor-pointer"
-                  >
-                    <option value="">-- Choose your college --</option>
-                    {filteredColleges.map((col) => (
-                      <option key={col._id} value={col._id}>
-                        {col.shortCode ? `${col.shortCode} - ` : ""}
-                        {col.name} {col.city ? `(${col.city})` : ""}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <select
+                  {...register("college", {
+                    required: role !== "admin" ? "Please select your college" : false,
+                  })}
+                  className="w-full px-3 py-2.5 rounded-xl border border-m3-border text-sm text-m3-text bg-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition cursor-pointer"
+                >
+                  <option value="">-- Choose your college --</option>
+                  {colleges.map((col) => (
+                    <option key={col._id} value={col._id}>
+                      {col.shortCode ? `${col.shortCode} - ` : ""}
+                      {col.name} {col.city ? `(${col.city})` : ""}
+                    </option>
+                  ))}
+                </select>
               )}
               {errors.college && (
-                <p className="mt-1 text-xs text-red-600">{errors.college.message}</p>
+                <p className="mt-1 text-xs text-m3-danger">{errors.college.message}</p>
               )}
             </div>
           )}
 
           {/* Password */}
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
-              Password
+            <label className="block text-xs font-medium text-m3-muted mb-1">
+              Password *
             </label>
             <input
               type="password"
@@ -219,27 +202,27 @@ const Signin = () => {
                 required: "Password is required",
                 minLength: { value: 6, message: "Password must be at least 6 characters" },
               })}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black placeholder:text-gray-400 focus:outline-none focus:border-black transition"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-m3-border text-sm text-m3-text placeholder:text-m3-muted/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition bg-surface"
             />
             {errors.inputpassword && (
-              <p className="mt-1 text-xs text-red-600">{errors.inputpassword.message}</p>
+              <p className="mt-1 text-xs text-m3-danger">{errors.inputpassword.message}</p>
             )}
           </div>
 
           {/* Security Passcode for Member / Admin */}
           {(role === "member" || role === "admin") && (
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
+              <label className="block text-xs font-medium text-m3-muted mb-1">
                 {role === "admin" ? "Platform Admin Security Key" : "Society Coordinator Key"}
               </label>
               <input
                 type="password"
                 placeholder="Enter access code (recruit)"
                 {...register("code", { required: "Security key is required" })}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black placeholder:text-gray-400 focus:outline-none focus:border-black transition"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-m3-border text-sm text-m3-text placeholder:text-m3-muted/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition bg-surface"
               />
               {errors.code && (
-                <p className="mt-1 text-xs text-red-600">{errors.code.message}</p>
+                <p className="mt-1 text-xs text-m3-danger">{errors.code.message}</p>
               )}
             </div>
           )}
@@ -247,18 +230,18 @@ const Signin = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full mt-2 py-2.5 px-4 bg-black text-white text-sm font-semibold rounded-[11px] border border-black hover:bg-white hover:text-black transition-colors duration-200 cursor-pointer disabled:opacity-50"
+            className="w-full mt-2 py-3 px-4 bg-primary text-white text-sm font-semibold rounded-full hover:bg-primary-hover transition-colors duration-200 cursor-pointer disabled:opacity-50 outline-none shadow-xs"
           >
             {isSubmitting ? "Creating account..." : "Complete Registration"}
           </button>
         </form>
 
-        <div className="pt-2 border-t border-gray-100 text-center">
-          <p className="text-xs text-gray-500">
+        <div className="pt-2 border-t border-m3-border/50 text-center">
+          <p className="text-xs text-m3-muted">
             Already have an account?{" "}
             <Link
               to="/login"
-              className="font-semibold text-black hover:underline ml-1"
+              className="font-semibold text-primary hover:underline ml-1 outline-none"
             >
               Sign In
             </Link>

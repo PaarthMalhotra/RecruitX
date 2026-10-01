@@ -13,7 +13,7 @@ const NavigationTabs = () => {
   const [field, setField] = useState(activeTabs[0] || "DashBoard");
 
   return (
-    <div className="flex items-center gap-1 rounded-full bg-[#F3F3E8] p-1 overflow-x-auto max-w-full no-scrollbar">
+    <div className="flex items-center gap-1 rounded-full bg-field p-1 overflow-x-auto max-w-full no-scrollbar border border-m3-border/40">
       {activeTabs.map((fieldName) => {
         const active = fieldName === field;
 
@@ -33,8 +33,8 @@ const NavigationTabs = () => {
               outline-none
               ${
                 active
-                  ? "bg-white text-black shadow-sm"
-                  : "text-gray-600 hover:text-black"
+                  ? "bg-active-tint text-text-active font-semibold shadow-xs"
+                  : "text-m3-muted hover:text-m3-text"
               }
             `}
           >

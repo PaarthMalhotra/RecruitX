@@ -74,22 +74,22 @@ const SocietyPage = () => {
 
   if (loading) {
     return (
-      <div className="w-full max-w-7xl mx-auto p-8 bg-white rounded-2xl border border-black/10 animate-pulse space-y-4">
-        <div className="h-6 bg-gray-200 rounded w-24"></div>
-        <div className="h-10 bg-gray-200 rounded w-2/3"></div>
-        <div className="h-20 bg-gray-100 rounded w-full"></div>
+      <div className="w-full max-w-7xl mx-auto p-8 bg-surface rounded-2xl border border-m3-border/60 animate-pulse space-y-4 font-sans">
+        <div className="h-6 bg-field rounded-full w-24"></div>
+        <div className="h-10 bg-field rounded-full w-2/3"></div>
+        <div className="h-20 bg-field/60 rounded-2xl w-full"></div>
       </div>
     );
   }
 
   if (!details || details.success === false) {
     return (
-      <div className="w-full max-w-7xl mx-auto mt-4 p-12 bg-white rounded-2xl border border-black/10 text-center">
-        <h2 className="text-xl font-bold text-gray-800">Society not found</h2>
-        <p className="text-gray-500 text-sm mt-2">The society you are looking for does not exist or has been removed.</p>
+      <div className="w-full max-w-7xl mx-auto mt-4 p-12 bg-surface rounded-2xl border border-m3-border/60 text-center font-sans">
+        <h2 className="text-xl font-bold text-m3-text">Society not found</h2>
+        <p className="text-m3-muted text-sm mt-2">The society you are looking for does not exist or has been removed.</p>
         <Link
           to="/home/userdashboard"
-          className="inline-block mt-4 px-4 py-2 bg-purple-700 text-white rounded-xl text-sm font-semibold hover:bg-purple-800"
+          className="inline-block mt-4 px-5 py-2.5 bg-primary text-white rounded-full text-sm font-semibold hover:bg-primary-hover transition"
         >
           Back to Societies
         </Link>
@@ -98,46 +98,46 @@ const SocietyPage = () => {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto pb-8 space-y-4">
+    <div className="w-full max-w-7xl mx-auto pb-8 space-y-4 font-sans text-m3-text">
       {/* Top Bar with Back Button */}
       <div className="flex items-center justify-between">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-1 text-sm font-semibold text-gray-600 hover:text-black cursor-pointer transition"
+          className="flex items-center gap-1 text-sm font-semibold text-m3-muted hover:text-primary cursor-pointer transition"
         >
           ← Back
         </button>
 
         {userRole === "admin" && (
-          <span className="text-xs font-semibold px-2.5 py-1 bg-red-100 text-red-700 rounded-full border border-red-200">
+          <span className="text-xs font-semibold px-3 py-1 bg-field text-primary rounded-full border border-m3-border/60">
             Admin View
           </span>
         )}
       </div>
 
       {/* Society Hero Card */}
-      <div className="bg-white rounded-3xl border border-black/10 p-6 sm:p-8 shadow-xs space-y-4">
+      <div className="bg-surface rounded-2xl border border-m3-border/60 p-6 sm:p-8 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-2xl sm:text-4xl font-extrabold text-black tracking-tight">
+              <h1 className="text-2xl sm:text-4xl font-extrabold text-m3-text tracking-tight">
                 {details.name}
               </h1>
-              <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-900 border border-purple-200">
+              <span className="rounded-full bg-field px-3.5 py-1 text-xs font-semibold text-primary border border-m3-border/60">
                 {details.category}
               </span>
             </div>
-            <div className="flex items-center gap-4 text-xs sm:text-sm text-gray-500 mt-2">
-              <span>🏛️ College: <strong className="text-gray-800 font-semibold">{details.college}</strong></span>
+            <div className="flex items-center gap-4 text-xs sm:text-sm text-m3-muted mt-2">
+              <span>🏛️ College: <strong className="text-m3-text font-semibold">{details.college}</strong></span>
               <span>•</span>
-              <span>📅 Registration Starts: <strong className="text-gray-800 font-semibold">{details.startdate ? details.startdate.split('T')[0] : 'TBA'}</strong></span>
+              <span>📅 Registration Starts: <strong className="text-m3-text font-semibold">{details.startdate ? details.startdate.split('T')[0] : 'TBA'}</strong></span>
             </div>
           </div>
         </div>
 
-        <div className="pt-3 border-t border-gray-100">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">About Society</h3>
-          <p className="text-gray-700 text-sm sm:text-base leading-relaxed whitespace-pre-line">
+        <div className="pt-3 border-t border-m3-border/40">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-m3-muted mb-1">About Society</h3>
+          <p className="text-m3-text text-sm sm:text-base leading-relaxed whitespace-pre-line">
             {details.about}
           </p>
         </div>
@@ -147,10 +147,10 @@ const SocietyPage = () => {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-950">Departments</h2>
-            <p className="text-xs sm:text-sm text-gray-500">Choose a department and apply for recruitment.</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-m3-text">Departments</h2>
+            <p className="text-xs sm:text-sm text-m3-muted">Choose a department and apply for recruitment.</p>
           </div>
-          <span className="text-xs font-bold px-3 py-1 bg-gray-100 rounded-full text-gray-700">
+          <span className="text-xs font-bold px-3.5 py-1 bg-field rounded-full text-primary border border-m3-border/60">
             {details.departments?.length || 0} Total
           </span>
         </div>
@@ -164,21 +164,21 @@ const SocietyPage = () => {
               return (
                 <div
                   key={dept._id || dept.departmentName}
-                  className="bg-white border border-black/10 rounded-2xl p-5 sm:p-6 shadow-xs hover:border-black/20 transition space-y-4"
+                  className="bg-surface border border-m3-border/60 rounded-2xl p-5 sm:p-6 shadow-xs hover:border-m3-border transition space-y-4"
                 >
                   <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
                     <div className="space-y-1 max-w-2xl">
                       <div className="flex items-center gap-2.5">
-                        <h3 className="text-lg sm:text-xl font-bold text-gray-950">
+                        <h3 className="text-lg sm:text-xl font-bold text-m3-text">
                           {dept.departmentName}
                         </h3>
                         {dept.students && (
-                          <span className="text-xs px-2 py-0.5 rounded-md bg-gray-100 text-gray-600 font-medium">
+                          <span className="text-xs px-2.5 py-0.5 rounded-full bg-field text-m3-muted font-medium border border-m3-border/40">
                             {dept.students.length} applicants
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-gray-600 leading-relaxed">
+                      <p className="text-sm text-m3-muted leading-relaxed">
                         {dept.departmentDesc || "No department description available."}
                       </p>
                     </div>
@@ -187,14 +187,14 @@ const SocietyPage = () => {
                     <div className="shrink-0 flex items-center gap-3">
                       {isEnrolled ? (
                         <div className="flex items-center gap-2">
-                          <span className="text-xs text-gray-500 font-medium">Status:</span>
+                          <span className="text-xs text-m3-muted font-medium">Status:</span>
                           <span
-                            className={`px-3 py-1 rounded-full text-xs font-bold ${
+                            className={`px-3 py-1 rounded-full text-xs font-bold border ${
                               status === "Approved" || status === "Accepted"
-                                ? "bg-green-100 text-green-800 border border-green-200"
+                                ? "bg-[#E6F4EA] text-m3-success border-[#CEEAD6]"
                                 : status === "Rejected"
-                                ? "bg-red-100 text-red-800 border border-red-200"
-                                : "bg-yellow-100 text-yellow-800 border border-yellow-200"
+                                ? "bg-[#FCE8E6] text-m3-danger border-[#FAD2CF]"
+                                : "bg-[#FEF7E0] text-m3-warning border-[#FEEFC3]"
                             }`}
                           >
                             {status === "Accepted" ? "Approved" : status}
@@ -205,15 +205,15 @@ const SocietyPage = () => {
                           onClick={() => handleDirectEnroll(dept)}
                           disabled={enrollingDept === dept.departmentName}
                           className="
-                            px-4 py-2 rounded-xl text-sm font-semibold
-                            bg-purple-700 text-white hover:bg-purple-800
+                            px-5 py-2.5 rounded-full text-sm font-semibold
+                            bg-primary text-white hover:bg-primary-hover
                             shadow-xs cursor-pointer transition disabled:opacity-50
                           "
                         >
                           {enrollingDept === dept.departmentName ? "Enrolling..." : "Enroll Now"}
                         </button>
                       ) : (
-                        <span className="text-xs text-gray-500 italic">
+                        <span className="text-xs text-m3-muted italic">
                           {userRole === "member" ? "Manage in Dashboard" : "Admin view"}
                         </span>
                       )}
@@ -222,8 +222,8 @@ const SocietyPage = () => {
 
                   {/* Recruitment Rounds Sub-section */}
                   {dept.rounds && dept.rounds.length > 0 && (
-                    <div className="pt-4 border-t border-gray-100">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2.5">
+                    <div className="pt-4 border-t border-m3-border/40">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-m3-muted mb-2.5">
                         Recruitment Rounds (Schedule & Info):
                       </h4>
 
@@ -231,23 +231,23 @@ const SocietyPage = () => {
                         {dept.rounds.map((round, idx) => (
                           <div
                             key={round._id || idx}
-                            className="bg-gray-50 border border-black/5 rounded-xl p-3.5 flex flex-col justify-between space-y-2"
+                            className="bg-field/40 border border-m3-border/60 rounded-xl p-3.5 flex flex-col justify-between space-y-2"
                           >
                             <div>
-                              <div className="flex items-center gap-1.5 font-bold text-sm text-gray-900">
-                                <span className="w-5 h-5 rounded-full bg-purple-200 text-purple-900 text-xs flex items-center justify-center font-bold">
+                              <div className="flex items-center gap-1.5 font-bold text-sm text-m3-text">
+                                <span className="w-5 h-5 rounded-full bg-active-tint text-text-active text-xs flex items-center justify-center font-bold">
                                   {idx + 1}
                                 </span>
                                 <span className="truncate">{round.roundName}</span>
                               </div>
-                              <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+                              <p className="text-xs text-m3-muted mt-1 line-clamp-2">
                                 {round.roundDesc || "Details will be provided by coordinators."}
                               </p>
                             </div>
 
-                            <div className="pt-2 border-t border-gray-200/60 flex items-center justify-between text-[11px] text-gray-500">
+                            <div className="pt-2 border-t border-m3-border/40 flex items-center justify-between text-[11px] text-m3-muted">
                               <span>
-                                Deadline: <strong className="text-gray-700">{round.roundEndDate ? round.roundEndDate.split('T')[0] : 'TBA'}</strong>
+                                Deadline: <strong className="text-m3-text">{round.roundEndDate ? round.roundEndDate.split('T')[0] : 'TBA'}</strong>
                               </span>
                             </div>
                           </div>
@@ -260,8 +260,8 @@ const SocietyPage = () => {
             })}
           </div>
         ) : (
-          <div className="bg-white border border-black/10 rounded-2xl p-8 text-center">
-            <p className="text-sm text-gray-500">No departments added yet to this society.</p>
+          <div className="bg-surface border border-m3-border/60 rounded-2xl p-8 text-center">
+            <p className="text-sm text-m3-muted">No departments added yet to this society.</p>
           </div>
         )}
       </div>

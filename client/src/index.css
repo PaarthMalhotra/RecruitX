@@ -1,1 +1,43 @@
 @import "tailwindcss";
+
+@theme {
+  --color-page: #F6F8FC;
+  --color-surface: #FFFFFF;
+  --color-field: #EAF1FB;
+  --color-active-tint: #D3E3FD;
+  --color-tonal: #C2E7FF;
+  --color-tonal-text: #001D35;
+  --color-primary: #0B57D0;
+  --color-primary-hover: #0842A0;
+  --color-text-active: #041E49;
+  --color-m3-text: #1F1F1F;
+  --color-m3-muted: #444746;
+  --color-m3-border: #DADCE0;
+  --color-m3-success: #188038;
+  --color-m3-danger: #D93025;
+  --color-m3-warning: #B06000;
+}
+
+:root {
+  --page: #F6F8FC;
+  --surface: #FFFFFF;
+  --field: #EAF1FB;
+  --active-tint: #D3E3FD;
+  --tonal: #C2E7FF;
+  --tonal-text: #001D35;
+  --primary: #0B57D0;
+  --primary-hover: #0842A0;
+  --text-active: #041E49;
+  --m3-text: #1F1F1F;
+  --m3-muted: #444746;
+  --m3-border: #DADCE0;
+  --m3-success: #188038;
+  --m3-danger: #D93025;
+  --m3-warning: #B06000;
+}
+
+body {
+  background-color: var(--page);
+  color: var(--m3-text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}

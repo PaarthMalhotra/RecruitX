@@ -78,48 +78,48 @@ const CreateSociety = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto pb-10 font-sans text-gray-900">
+    <div className="w-full max-w-4xl mx-auto pb-10 font-sans text-m3-text">
       <div className="mb-4">
         <Link
           to="/home/memberdashboard"
-          className="text-xs font-semibold text-gray-500 hover:text-black transition"
+          className="text-xs font-semibold text-primary hover:underline transition"
         >
           ← Back to Dashboard
         </Link>
       </div>
 
-      <div className="bg-white rounded-2xl border border-black/10 p-6 sm:p-10 shadow-xs max-w-2xl mx-auto space-y-6">
+      <div className="bg-surface rounded-2xl border border-m3-border/60 p-6 sm:p-10 shadow-xs max-w-2xl mx-auto space-y-6">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-black tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-m3-text tracking-tight">
             Register New Society
           </h1>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-m3-muted mt-1">
             Fill in details about your society to begin recruiting students on RecruitX.
           </p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">
+            <label className="block text-xs font-semibold text-m3-text mb-1">
               Society Name *
             </label>
             <input
               type="text"
               placeholder="e.g. IEEE Student Branch, Dramatics Society"
               {...register("name", { required: "Society name is required" })}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black focus:outline-none focus:border-black transition"
+              className="w-full px-4 py-2.5 rounded-xl bg-field border-0 text-sm text-m3-text placeholder:text-m3-muted/70 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-surface transition"
             />
-            {errors.name && <p className="text-xs text-red-600 mt-1">{errors.name.message}</p>}
+            {errors.name && <p className="text-xs text-m3-danger mt-1">{errors.name.message}</p>}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">
+              <label className="block text-xs font-semibold text-m3-text mb-1">
                 Category *
               </label>
               <select
                 {...register("category", { required: "Category is required" })}
-                className="w-full px-3 py-2.5 rounded-xl border border-black/15 text-sm text-black bg-white focus:outline-none focus:border-black transition cursor-pointer"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-field border-0 text-sm text-m3-text focus:outline-none focus:ring-2 focus:ring-primary focus:bg-surface transition cursor-pointer"
               >
                 {CATEGORIES.map((c) => (
                   <option key={c} value={c}>
@@ -131,12 +131,12 @@ const CreateSociety = () => {
 
             {/* Predefined College Dropdown (No hardcoded NSUT) */}
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">
+              <label className="block text-xs font-semibold text-m3-text mb-1">
                 College *
               </label>
               <select
                 {...register("college", { required: "College is required" })}
-                className="w-full px-3 py-2.5 rounded-xl border border-black/15 text-sm text-black bg-white focus:outline-none focus:border-black transition cursor-pointer"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-field border-0 text-sm text-m3-text focus:outline-none focus:ring-2 focus:ring-primary focus:bg-surface transition cursor-pointer"
               >
                 <option value="">-- Choose college --</option>
                 {colleges.map((col) => (
@@ -146,24 +146,24 @@ const CreateSociety = () => {
                   </option>
                 ))}
               </select>
-              {errors.college && <p className="text-xs text-red-600 mt-1">{errors.college.message}</p>}
+              {errors.college && <p className="text-xs text-m3-danger mt-1">{errors.college.message}</p>}
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">
+            <label className="block text-xs font-semibold text-m3-text mb-1">
               Registration Start Date *
             </label>
             <input
               type="date"
               {...register("startdate", { required: "Start date is required" })}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black focus:outline-none focus:border-black transition"
+              className="w-full px-4 py-2.5 rounded-xl bg-field border-0 text-sm text-m3-text focus:outline-none focus:ring-2 focus:ring-primary focus:bg-surface transition"
             />
-            {errors.startdate && <p className="text-xs text-red-600 mt-1">{errors.startdate.message}</p>}
+            {errors.startdate && <p className="text-xs text-m3-danger mt-1">{errors.startdate.message}</p>}
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">
+            <label className="block text-xs font-semibold text-m3-text mb-1">
               About Society *
             </label>
             <textarea
@@ -173,23 +173,23 @@ const CreateSociety = () => {
                 required: "Description is required",
                 minLength: { value: 20, message: "Description must be at least 20 characters" },
               })}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black focus:outline-none focus:border-black transition leading-relaxed"
+              className="w-full px-4 py-2.5 rounded-xl bg-field border-0 text-sm text-m3-text placeholder:text-m3-muted/70 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-surface transition leading-relaxed"
             ></textarea>
-            {errors.about && <p className="text-xs text-red-600 mt-1">{errors.about.message}</p>}
+            {errors.about && <p className="text-xs text-m3-danger mt-1">{errors.about.message}</p>}
           </div>
 
           <div className="pt-2 flex items-center justify-end gap-3">
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="px-4 py-2 rounded-xl text-xs font-medium text-gray-700 hover:bg-gray-100 cursor-pointer"
+              className="px-4 py-2 rounded-full text-xs font-medium text-m3-muted hover:bg-field cursor-pointer outline-none"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-5 py-2.5 rounded-[11px] text-xs sm:text-sm font-semibold bg-black text-white border border-black hover:bg-white hover:text-black transition-colors duration-200 disabled:opacity-50 cursor-pointer"
+              className="px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold bg-primary text-white hover:bg-primary-hover transition-colors duration-200 disabled:opacity-50 cursor-pointer outline-none"
             >
               {submitting ? "Creating..." : "Create Society"}
             </button>

@@ -103,40 +103,40 @@ const AddDepartment = () => {
 
   if (loading) {
     return (
-      <div className="w-full max-w-4xl mx-auto p-8 bg-white rounded-3xl border border-black/10 animate-pulse space-y-4">
-        <div className="h-6 bg-gray-200 rounded w-1/4"></div>
-        <div className="h-10 bg-gray-100 rounded"></div>
+      <div className="w-full max-w-4xl mx-auto p-8 bg-surface rounded-2xl border border-m3-border/60 animate-pulse space-y-4 font-sans">
+        <div className="h-6 bg-field rounded-full w-1/4"></div>
+        <div className="h-10 bg-field/60 rounded-xl"></div>
       </div>
     );
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto pb-8 space-y-4">
+    <div className="w-full max-w-4xl mx-auto pb-8 space-y-4 font-sans text-m3-text">
       <div className="mb-4">
         <Link
           to="/home/memberdashboard"
-          className="text-sm font-semibold text-gray-600 hover:text-black transition"
+          className="text-sm font-semibold text-primary hover:underline transition"
         >
           ← Back to Dashboard
         </Link>
       </div>
 
-      <div className="bg-white rounded-3xl border border-black/10 p-6 sm:p-10 shadow-xs max-w-2xl mx-auto space-y-6">
+      <div className="bg-surface rounded-2xl border border-m3-border/60 p-6 sm:p-10 shadow-xs max-w-2xl mx-auto space-y-6">
         <div>
-          <span className="text-xs font-bold text-purple-700 uppercase tracking-wider">
+          <span className="text-xs font-bold text-primary uppercase tracking-wider">
             {society?.name}
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-950 tracking-tight mt-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-m3-text tracking-tight mt-1">
             Add New Department
           </h1>
-          <p className="text-xs sm:text-sm text-gray-500 mt-1">
+          <p className="text-xs sm:text-sm text-m3-muted mt-1">
             Define a recruitment track for students with customizable recruitment rounds and task deadlines.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-m3-text mb-1.5">
               Department Name *
             </label>
             <input
@@ -145,12 +145,12 @@ const AddDepartment = () => {
               value={departmentName}
               onChange={(e) => setDepartmentName(e.target.value)}
               required
-              className="w-full p-3.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-purple-600"
+              className="w-full p-3.5 rounded-xl bg-field border-0 text-sm text-m3-text placeholder:text-m3-muted/70 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-surface"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-m3-text mb-1.5">
               Department Description *
             </label>
             <textarea
@@ -159,18 +159,18 @@ const AddDepartment = () => {
               value={departmentDesc}
               onChange={(e) => setDepartmentDesc(e.target.value)}
               required
-              className="w-full p-3.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-purple-600 leading-relaxed"
+              className="w-full p-3.5 rounded-xl bg-field border-0 text-sm text-m3-text placeholder:text-m3-muted/70 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-surface leading-relaxed"
             ></textarea>
           </div>
 
           {/* Recruitment Rounds Sub-form */}
-          <div className="pt-2 border-t border-gray-100 space-y-4">
+          <div className="pt-2 border-t border-m3-border/40 space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold uppercase tracking-wider text-gray-900">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-m3-text">
                   Recruitment Rounds
                 </h3>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-m3-muted">
                   Add the sequential evaluation rounds for this department.
                 </p>
               </div>
@@ -178,7 +178,7 @@ const AddDepartment = () => {
               <button
                 type="button"
                 onClick={addRound}
-                className="px-3 py-1.5 bg-purple-100 text-purple-900 rounded-xl text-xs font-bold hover:bg-purple-200 transition cursor-pointer"
+                className="px-3.5 py-1.5 bg-tonal text-tonal-text rounded-full text-xs font-bold hover:bg-active-tint transition cursor-pointer"
               >
                 + Add Another Round
               </button>
@@ -188,17 +188,17 @@ const AddDepartment = () => {
               {rounds.map((round, idx) => (
                 <div
                   key={idx}
-                  className="bg-gray-50 border border-black/10 rounded-2xl p-4 sm:p-5 relative space-y-3"
+                  className="bg-field/30 border border-m3-border/60 rounded-2xl p-4 sm:p-5 relative space-y-3"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-extrabold text-purple-900 bg-purple-200/80 px-2.5 py-0.5 rounded-full">
+                    <span className="text-xs font-extrabold text-text-active bg-active-tint px-3 py-0.5 rounded-full">
                       Round {idx + 1}
                     </span>
                     {rounds.length > 1 && (
                       <button
                         type="button"
                         onClick={() => removeRound(idx)}
-                        className="text-xs text-red-500 hover:text-red-700 font-semibold cursor-pointer"
+                        className="text-xs text-m3-danger hover:underline font-semibold cursor-pointer"
                       >
                         ✕ Remove
                       </button>
@@ -207,7 +207,7 @@ const AddDepartment = () => {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[11px] font-semibold text-gray-600 mb-1">
+                      <label className="block text-[11px] font-semibold text-m3-muted mb-1">
                         Round Name *
                       </label>
                       <input
@@ -216,25 +216,25 @@ const AddDepartment = () => {
                         value={round.roundName}
                         onChange={(e) => updateRound(idx, "roundName", e.target.value)}
                         required
-                        className="w-full p-2.5 rounded-xl border border-gray-300 text-xs bg-white focus:outline-none focus:border-purple-600"
+                        className="w-full p-2.5 rounded-xl border border-m3-border/80 text-xs bg-surface text-m3-text focus:outline-none focus:ring-2 focus:ring-primary"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-gray-600 mb-1">
+                      <label className="block text-[11px] font-semibold text-m3-muted mb-1">
                         Round End Date (Optional)
                       </label>
                       <input
                         type="date"
                         value={round.roundEndDate}
                         onChange={(e) => updateRound(idx, "roundEndDate", e.target.value)}
-                        className="w-full p-2.5 rounded-xl border border-gray-300 text-xs bg-white focus:outline-none focus:border-purple-600"
+                        className="w-full p-2.5 rounded-xl border border-m3-border/80 text-xs bg-surface text-m3-text focus:outline-none focus:ring-2 focus:ring-primary"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-gray-600 mb-1">
+                    <label className="block text-[11px] font-semibold text-m3-muted mb-1">
                       Round Description & Instructions
                     </label>
                     <input
@@ -242,12 +242,12 @@ const AddDepartment = () => {
                       placeholder="What should students do during this round?"
                       value={round.roundDesc}
                       onChange={(e) => updateRound(idx, "roundDesc", e.target.value)}
-                      className="w-full p-2.5 rounded-xl border border-gray-300 text-xs bg-white focus:outline-none focus:border-purple-600"
+                      className="w-full p-2.5 rounded-xl border border-m3-border/80 text-xs bg-surface text-m3-text placeholder:text-m3-muted/70 focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-gray-600 mb-1">
+                    <label className="block text-[11px] font-semibold text-m3-muted mb-1">
                       Problem Statement / Resource URL (Optional)
                     </label>
                     <input
@@ -255,7 +255,7 @@ const AddDepartment = () => {
                       placeholder="https://..."
                       value={round.link}
                       onChange={(e) => updateRound(idx, "link", e.target.value)}
-                      className="w-full p-2.5 rounded-xl border border-gray-300 text-xs bg-white focus:outline-none focus:border-purple-600"
+                      className="w-full p-2.5 rounded-xl border border-m3-border/80 text-xs bg-surface text-m3-text placeholder:text-m3-muted/70 focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                   </div>
                 </div>
@@ -267,14 +267,14 @@ const AddDepartment = () => {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-100 cursor-pointer"
+              className="px-5 py-2.5 rounded-full text-xs font-semibold text-m3-muted hover:bg-field cursor-pointer outline-none"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-6 py-2.5 rounded-xl text-sm font-bold bg-purple-700 text-white hover:bg-purple-800 shadow-sm transition disabled:opacity-50 cursor-pointer"
+              className="px-6 py-2.5 rounded-full text-xs sm:text-sm font-semibold bg-primary text-white hover:bg-primary-hover shadow-sm transition disabled:opacity-50 cursor-pointer outline-none"
             >
               {submitting ? "Saving..." : "Create Department"}
             </button>

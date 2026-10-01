@@ -69,15 +69,15 @@ const Avatar = () => {
           flex items-center justify-center
           w-10 h-10
           rounded-full
-          bg-purple-200
-          border border-purple-300
+          bg-tonal
+          border border-active-tint
           text-sm
           font-bold
-          text-purple-900
+          text-tonal-text
           cursor-pointer
           transition
-          hover:bg-purple-300
-          focus:outline-none focus:ring-2 focus:ring-purple-400
+          hover:bg-active-tint
+          focus:outline-none focus:ring-2 focus:ring-primary
         "
         title="User profile & settings"
       >
@@ -87,18 +87,18 @@ const Avatar = () => {
       {isOpen && (
         <div className="
           absolute right-0 mt-2 w-56
-          bg-white rounded-2xl
-          border border-black/10
+          bg-surface rounded-2xl
+          border border-m3-border/60
           shadow-lg p-2 z-50
           animate-in fade-in slide-in-from-top-2 duration-150
         ">
-          <div className="px-3 py-2 border-b border-gray-100">
-            <p className="text-sm font-semibold text-gray-900 truncate">
+          <div className="px-3 py-2 border-b border-m3-border/40">
+            <p className="text-sm font-semibold text-m3-text truncate">
               {profile?.f_name ? `${profile.f_name} ${profile.l_name || ''}` : (profile?.email || 'Logged In User')}
             </p>
-            <p className="text-xs text-gray-500 truncate mt-0.5">{profile?.email}</p>
+            <p className="text-xs text-m3-muted truncate mt-0.5">{profile?.email}</p>
             <div className="mt-1.5">
-              <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-purple-100 text-purple-800">
+              <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-field text-primary border border-m3-border/60">
                 {currentRole === 'admin' ? 'Admin' : currentRole === 'member' ? 'Society Member' : 'Student'}
               </span>
             </div>
@@ -108,16 +108,16 @@ const Avatar = () => {
             <Link
               to="/home/profile"
               onClick={() => setIsOpen(false)}
-              className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-900 rounded-xl transition"
+              className="w-full flex items-center px-3 py-2 text-sm text-m3-text hover:bg-field rounded-xl transition"
             >
               My Profile
             </Link>
           </div>
 
-          <div className="pt-1 border-t border-gray-100">
+          <div className="pt-1 border-t border-m3-border/40">
             <button
               onClick={handleLogout}
-              className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-xl transition font-medium cursor-pointer"
+              className="w-full text-left px-3 py-2 text-sm text-m3-danger hover:bg-red-50 rounded-xl transition font-medium cursor-pointer"
             >
               Log Out
             </button>

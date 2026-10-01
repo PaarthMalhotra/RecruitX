@@ -28,19 +28,19 @@ const SocietyDetail = () => {
 
   if (loading) {
     return (
-      <div className="w-full max-w-7xl mx-auto space-y-4 animate-pulse">
-        <div className="h-8 bg-gray-200 rounded w-48"></div>
-        <div className="h-64 bg-white rounded-3xl border border-black/10"></div>
+      <div className="w-full max-w-7xl mx-auto space-y-4 animate-pulse font-sans">
+        <div className="h-8 bg-field rounded-full w-48"></div>
+        <div className="h-64 bg-surface rounded-2xl border border-m3-border/60"></div>
       </div>
     );
   }
 
   if (!society) {
     return (
-      <div className="w-full max-w-7xl mx-auto pt-6 bg-white rounded-3xl border border-black/10 p-10 text-center space-y-3">
-        <h2 className="text-xl font-bold text-gray-900">No Society Registered</h2>
-        <p className="text-sm text-gray-500">Create your society to begin.</p>
-        <Link to="/home/member/create-society" className="inline-block px-5 py-2 bg-purple-700 text-white rounded-xl text-xs font-bold">
+      <div className="w-full max-w-7xl mx-auto pt-6 bg-surface rounded-2xl border border-m3-border/60 p-10 text-center space-y-3 font-sans">
+        <h2 className="text-xl font-bold text-m3-text">No Society Registered</h2>
+        <p className="text-sm text-m3-muted">Create your society to begin.</p>
+        <Link to="/home/member/create-society" className="inline-block px-5 py-2.5 bg-primary text-white rounded-full text-xs font-semibold hover:bg-primary-hover transition">
           Create Society
         </Link>
       </div>
@@ -48,18 +48,18 @@ const SocietyDetail = () => {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto pb-8 space-y-4">
+    <div className="w-full max-w-7xl mx-auto pb-8 space-y-4 font-sans text-m3-text">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
         <div>
           <div className="flex items-center gap-2">
-            <Link to="/home/memberdashboard" className="text-xs font-semibold text-gray-500 hover:text-black">
+            <Link to="/home/memberdashboard" className="text-xs font-semibold text-primary hover:underline">
               ← Dashboard
             </Link>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-950 tracking-tight mt-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-m3-text tracking-tight mt-1">
             Society Profile
           </h1>
-          <p className="text-xs sm:text-sm text-gray-500">
+          <p className="text-xs sm:text-sm text-m3-muted">
             Official details for your society on RecruitX.
           </p>
         </div>
@@ -67,44 +67,44 @@ const SocietyDetail = () => {
         <div className="flex items-center gap-3">
           <Link
             to={`/home/displaysociety/${society._id}`}
-            className="px-4 py-2 bg-purple-100 text-purple-900 rounded-xl text-xs font-bold hover:bg-purple-200 transition"
+            className="px-4 py-2 bg-tonal text-tonal-text rounded-full text-xs font-semibold hover:bg-active-tint transition"
           >
             Preview Public View ↗
           </Link>
         </div>
       </div>
 
-      <div className="bg-white rounded-3xl border border-black/10 p-6 sm:p-8 shadow-xs space-y-6">
+      <div className="bg-surface rounded-2xl border border-m3-border/60 p-6 sm:p-8 shadow-xs space-y-6">
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-3 flex-wrap">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-950">{society.name}</h2>
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-900 border border-purple-200">
+              <h2 className="text-2xl sm:text-3xl font-bold text-m3-text">{society.name}</h2>
+              <span className="px-3.5 py-1 rounded-full text-xs font-semibold bg-field text-primary border border-m3-border/60">
                 {society.category}
               </span>
             </div>
-            <p className="text-xs text-gray-500 mt-1.5">
-              College: <strong className="text-gray-700">{society.college}</strong> • Registration Starts: <strong className="text-gray-700">{society.startdate ? society.startdate.split("T")[0] : "TBA"}</strong>
+            <p className="text-xs text-m3-muted mt-1.5">
+              College: <strong className="text-m3-text">{society.college}</strong> • Registration Starts: <strong className="text-m3-text">{society.startdate ? society.startdate.split("T")[0] : "TBA"}</strong>
             </p>
           </div>
         </div>
 
-        <div className="pt-4 border-t border-gray-100 space-y-2">
-          <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
+        <div className="pt-4 border-t border-m3-border/40 space-y-2">
+          <span className="text-xs font-bold uppercase tracking-wider text-m3-muted">
             About the Society
           </span>
-          <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+          <p className="text-sm text-m3-text leading-relaxed whitespace-pre-line">
             {society.about}
           </p>
         </div>
 
-        <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
-          <span className="text-xs font-bold text-gray-500">
+        <div className="pt-4 border-t border-m3-border/40 flex items-center justify-between">
+          <span className="text-xs font-semibold text-m3-muted">
             {society.departments?.length || 0} Registered Departments
           </span>
           <Link
             to="/home/member/departments"
-            className="text-xs font-semibold text-purple-700 hover:underline"
+            className="text-xs font-semibold text-primary hover:underline"
           >
             Manage Departments →
           </Link>
