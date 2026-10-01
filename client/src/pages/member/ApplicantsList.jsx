@@ -6,7 +6,7 @@ import { toast } from "sonner";
 const ApplicantsList = () => {
   const [society, setSociety] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [updatingId, setUpdatingId] = useState(null); // tracking `${studentId}-${deptName}`
+  const [updatingId, setUpdatingId] = useState(null);
   const [selectedDeptFilter, setSelectedDeptFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
@@ -82,17 +82,20 @@ const ApplicantsList = () => {
     return (
       <div className="w-full max-w-7xl mx-auto space-y-4">
         <div className="h-8 bg-gray-200 rounded w-64 animate-pulse"></div>
-        <div className="h-96 bg-white rounded-3xl border border-black/10 animate-pulse"></div>
+        <div className="h-96 bg-white rounded-2xl border border-black/10 animate-pulse"></div>
       </div>
     );
   }
 
   if (!society) {
     return (
-      <div className="w-full max-w-7xl mx-auto pt-6 bg-white rounded-3xl border border-black/10 p-10 text-center space-y-3">
+      <div className="w-full max-w-7xl mx-auto pt-6 bg-white rounded-2xl border border-black/10 p-10 text-center space-y-3 shadow-xs">
         <h2 className="text-xl font-bold text-gray-900">No Society Found</h2>
-        <p className="text-sm text-gray-500">You need to register your society first.</p>
-        <Link to="/home/member/create-society" className="inline-block px-5 py-2 bg-purple-700 text-white rounded-xl text-xs font-bold">
+        <p className="text-xs text-gray-500">You need to register your society first.</p>
+        <Link
+          to="/home/member/create-society"
+          className="inline-block px-4 py-2 bg-black text-white rounded-[10px] text-xs font-semibold border border-black hover:bg-white hover:text-black transition"
+        >
           Create Society
         </Link>
       </div>
@@ -110,63 +113,62 @@ const ApplicantsList = () => {
     });
   });
 
-  // Filter applicants
+  // B6.5 Filter: The search box must search BY STUDENT NAME ONLY (partial & case-insensitive)
   const filteredApplicants = allApplicants.filter((item) => {
     const student = item.studentId || {};
     const matchesDept = selectedDeptFilter === "All" || item.departmentName === selectedDeptFilter;
 
-    const normalizedStatus = (item.status === "Accepted" || item.status === "Approved") ? "Approved" : (item.status === "Rejected" ? "Rejected" : "In Progress");
+    const normalizedStatus =
+      item.status === "Accepted" || item.status === "Approved"
+        ? "Approved"
+        : item.status === "Rejected"
+        ? "Rejected"
+        : "In Progress";
     const matchesStatus = statusFilter === "All" || normalizedStatus === statusFilter;
 
+    // Search by student name ONLY
     const q = searchQuery.toLowerCase().trim();
-    const fullName = `${student.f_name || ''} ${student.l_name || ''}`.toLowerCase();
-    const matchesSearch =
-      !q ||
-      fullName.includes(q) ||
-      student.email?.toLowerCase().includes(q) ||
-      student.roll_no?.toLowerCase().includes(q) ||
-      student.branch?.toLowerCase().includes(q);
+    const fullName = `${student.f_name || ""} ${student.l_name || ""}`.trim().toLowerCase();
+    const matchesSearch = !q || fullName.includes(q);
 
     return matchesDept && matchesStatus && matchesSearch;
   });
 
   return (
-    <div className="w-full max-w-7xl mx-auto pb-8 space-y-4">
+    <div className="w-full max-w-7xl mx-auto pb-8 space-y-4 font-sans text-gray-900">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
         <div>
-          <div className="flex items-center gap-2">
-            <Link to="/home/memberdashboard" className="text-xs font-semibold text-gray-500 hover:text-black">
+          <div className="flex items-center gap-2 text-xs text-gray-500">
+            <Link to="/home/memberdashboard" className="font-semibold text-gray-700 hover:text-black">
               ← Dashboard
             </Link>
-            <span className="text-gray-300">•</span>
-            <span className="text-xs font-bold text-purple-700">{society.name}</span>
+            <span>•</span>
+            <span className="font-bold text-black">{society.name}</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-950 tracking-tight mt-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-black tracking-tight mt-1">
             Student Applicants
           </h1>
-          <p className="text-xs sm:text-sm text-gray-500">
-            Review student applicants, evaluate submissions, and approve or reject candidates.
+          <p className="text-xs text-gray-500">
+            Review student applicants, evaluate submissions, and send automated decision notifications.
           </p>
         </div>
 
-        <span className="self-start sm:self-auto text-xs font-bold px-3 py-1 bg-purple-100 text-purple-900 rounded-full border border-purple-200">
+        <span className="self-start sm:self-auto text-xs font-bold px-3 py-1 bg-black/5 text-black rounded-full border border-black/10">
           Total: {allApplicants.length} Applicants
         </span>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white rounded-2xl border border-black/10 p-4 sm:p-5 shadow-xs flex flex-col md:flex-row items-center justify-between gap-3">
+      <div className="bg-white rounded-2xl border border-black/10 p-4 shadow-xs flex flex-col md:flex-row items-center justify-between gap-3">
+        {/* Search input: Student name only */}
         <div className="relative w-full md:w-80">
-          <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
-            🔍
-          </span>
           <input
             type="text"
-            placeholder="Search by student name, roll no, email..."
+            placeholder="Search by student name..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 rounded-xl border border-gray-300 text-xs focus:outline-none focus:border-purple-600"
+            className="w-full px-3.5 py-2 rounded-xl border border-black/15 text-xs text-black focus:outline-none focus:border-black transition"
           />
         </div>
 
@@ -175,7 +177,7 @@ const ApplicantsList = () => {
           <select
             value={selectedDeptFilter}
             onChange={(e) => setSelectedDeptFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl border border-gray-300 text-xs bg-white focus:outline-none focus:border-purple-600"
+            className="px-3 py-2 rounded-xl border border-black/15 text-xs text-black bg-white focus:outline-none focus:border-black transition cursor-pointer"
           >
             <option value="All">All Departments ({society.departments?.length || 0})</option>
             {society.departments?.map((d) => (
@@ -189,7 +191,7 @@ const ApplicantsList = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl border border-gray-300 text-xs bg-white focus:outline-none focus:border-purple-600"
+            className="px-3 py-2 rounded-xl border border-black/15 text-xs text-black bg-white focus:outline-none focus:border-black transition cursor-pointer"
           >
             <option value="All">All Statuses</option>
             <option value="In Progress">In Progress (Pending)</option>
@@ -200,30 +202,29 @@ const ApplicantsList = () => {
       </div>
 
       {/* Applicants Table */}
-      <div className="bg-white rounded-3xl border border-black/10 shadow-xs overflow-hidden">
+      <div className="bg-white rounded-2xl border border-black/10 shadow-xs overflow-hidden">
         {filteredApplicants.length === 0 ? (
-          <div className="p-12 text-center space-y-3">
-            <div className="text-4xl">👥</div>
-            <h3 className="text-lg font-bold text-gray-900">No applicants found</h3>
+          <div className="p-12 text-center space-y-2">
+            <h3 className="text-base font-bold text-gray-900">No applicants found</h3>
             <p className="text-xs text-gray-500 max-w-sm mx-auto">
               {allApplicants.length === 0
                 ? "No students have applied to your society's departments yet."
-                : "No applicants match the selected filters."}
+                : "No applicants match the current search or filters."}
             </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[#FAF9E6]/60 border-b border-gray-200 text-xs font-bold text-gray-600 uppercase tracking-wider">
-                  <th className="py-3.5 px-4 sm:px-6">Student Info</th>
-                  <th className="py-3.5 px-4">Department</th>
-                  <th className="py-3.5 px-4">Academic Details</th>
-                  <th className="py-3.5 px-4 text-center">Status</th>
-                  <th className="py-3.5 px-4 sm:px-6 text-right">Actions</th>
+                <tr className="bg-gray-50/70 border-b border-gray-200 text-xs font-bold text-gray-600 uppercase tracking-wider">
+                  <th className="py-3 px-4">Student Info</th>
+                  <th className="py-3 px-4">Department</th>
+                  <th className="py-3 px-4">Academic Details</th>
+                  <th className="py-3 px-4 text-center">Status</th>
+                  <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 text-sm">
+              <tbody className="divide-y divide-gray-100 text-xs sm:text-sm">
                 {filteredApplicants.map((item, idx) => {
                   const student = item.studentId || {};
                   const studentId = student._id || item.studentId;
@@ -233,91 +234,88 @@ const ApplicantsList = () => {
                   const isApproved = status === "Accepted" || status === "Approved";
                   const isRejected = status === "Rejected";
 
+                  const collegeDisplay =
+                    student.college?.shortCode ||
+                    student.college?.name ||
+                    (typeof student.college === "string" ? student.college : "—");
+
                   return (
-                    <tr key={`${studentId}-${item.departmentName}-${idx}`} className="hover:bg-purple-50/30 transition">
+                    <tr key={`${studentId}-${item.departmentName}-${idx}`} className="hover:bg-gray-50/50 transition">
                       {/* Student Info */}
-                      <td className="py-4 px-4 sm:px-6">
-                        <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-purple-200 text-purple-900 font-bold flex items-center justify-center text-xs shrink-0">
-                            {student.f_name ? student.f_name[0].toUpperCase() : "U"}
-                          </div>
-                          <div>
-                            <p className="font-bold text-gray-950">
-                              {student.f_name ? `${student.f_name} ${student.l_name || ''}` : "Student"}
-                            </p>
-                            <p className="text-xs text-gray-500">{student.email || "No email"}</p>
-                            {student.p_number && (
-                              <p className="text-[11px] text-gray-400">📞 {student.p_number}</p>
-                            )}
-                          </div>
+                      <td className="py-3.5 px-4">
+                        <div>
+                          <p className="font-bold text-black">
+                            {student.f_name ? `${student.f_name} ${student.l_name || ""}` : "Student"}
+                          </p>
+                          <p className="text-xs text-gray-500">{student.email || "No email"}</p>
+                          {student.p_number && (
+                            <p className="text-[11px] text-gray-400">Tel: {student.p_number}</p>
+                          )}
                         </div>
                       </td>
 
                       {/* Department */}
-                      <td className="py-4 px-4">
-                        <span className="font-bold text-gray-900 block">
+                      <td className="py-3.5 px-4">
+                        <span className="font-semibold text-gray-900 block">
                           {item.departmentName}
-                        </span>
-                        <span className="text-[10px] text-purple-700 bg-purple-100 px-2 py-0.5 rounded-full font-semibold">
-                          Track
                         </span>
                       </td>
 
                       {/* Academic Info */}
-                      <td className="py-4 px-4 text-xs text-gray-600 space-y-0.5">
+                      <td className="py-3.5 px-4 text-xs text-gray-600 space-y-0.5">
                         <p><strong className="text-gray-800 font-medium">Roll:</strong> {student.roll_no || "—"}</p>
                         <p><strong className="text-gray-800 font-medium">Branch:</strong> {student.branch || "—"}</p>
-                        <p><strong className="text-gray-800 font-medium">College:</strong> {student.college || "NSUT"}</p>
+                        <p><strong className="text-gray-800 font-medium">College:</strong> {collegeDisplay}</p>
                       </td>
 
                       {/* Current Status */}
-                      <td className="py-4 px-4 text-center">
+                      <td className="py-3.5 px-4 text-center">
                         <span
-                          className={`inline-block px-3 py-1 rounded-full text-xs font-bold border ${
+                          className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
                             isApproved
-                              ? "bg-green-100 text-green-800 border-green-200"
+                              ? "bg-black text-white border-black"
                               : isRejected
-                              ? "bg-red-100 text-red-800 border-red-200"
-                              : "bg-yellow-100 text-yellow-800 border-yellow-200"
+                              ? "bg-gray-100 text-gray-500 border-gray-200"
+                              : "bg-white text-gray-800 border-black/20"
                           }`}
                         >
                           {isApproved ? "Approved" : isRejected ? "Rejected" : "In Progress"}
                         </span>
                       </td>
 
-                      {/* Action Buttons (Section 11 of requirements: [Approve] [Reject]) */}
-                      <td className="py-4 px-4 sm:px-6 text-right">
+                      {/* Action Buttons: Approve / Reject (Triggers Resend email notifications) */}
+                      <td className="py-3.5 px-4 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => handleStatusChange(item.departmentName, studentId, "Approved")}
                             disabled={isBusy || isApproved}
                             className={`
-                              px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer shadow-2xs
+                              px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer border
                               ${
                                 isApproved
-                                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                                  : "bg-emerald-600 text-white hover:bg-emerald-700"
+                                  ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
+                                  : "bg-black text-white border-black hover:bg-white hover:text-black"
                               }
                             `}
-                            title="Approve student for this department"
+                            title="Approve student and notify via email"
                           >
-                            {isBusy ? "..." : "✓ Approve"}
+                            {isBusy ? "..." : "Approve"}
                           </button>
 
                           <button
                             onClick={() => handleStatusChange(item.departmentName, studentId, "Rejected")}
                             disabled={isBusy || isRejected}
                             className={`
-                              px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer shadow-2xs
+                              px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer border
                               ${
                                 isRejected
-                                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                                  : "bg-rose-600 text-white hover:bg-rose-700"
+                                  ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
+                                  : "bg-white text-red-600 border-red-200 hover:bg-red-50"
                               }
                             `}
-                            title="Reject student for this department"
+                            title="Reject student and notify via email"
                           >
-                            {isBusy ? "..." : "✕ Reject"}
+                            {isBusy ? "..." : "Reject"}
                           </button>
                         </div>
                       </td>

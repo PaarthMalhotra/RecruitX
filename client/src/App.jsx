@@ -3,6 +3,7 @@ import "./App.css";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
+import LandingPage from "./pages/LandingPage.jsx";
 import Login from "./pages/login";
 import Signin from "./pages/signin";
 import { ProtectedRoute, GuestRoute, RoleRoute } from "./middleware/index.jsx";
@@ -27,7 +28,12 @@ import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import AdminSocieties from "./pages/admin/AdminSocieties.jsx";
 
 const HomeIndex = () => {
-  const userRole = useSelector((state) => state.user?.role) || (typeof window !== "undefined" ? (localStorage.getItem("recruitx_role") || localStorage.getItem("recruitech_role")) : null) || "user";
+  const userRole =
+    useSelector((state) => state.user?.role) ||
+    (typeof window !== "undefined"
+      ? localStorage.getItem("recruitx_role") || localStorage.getItem("recruitech_role")
+      : null) ||
+    "user";
   if (userRole === "admin") return <Navigate to="admindashboard" replace />;
   if (userRole === "member") return <Navigate to="memberdashboard" replace />;
   return <Navigate to="userdashboard" replace />;
@@ -36,8 +42,8 @@ const HomeIndex = () => {
 function App() {
   return (
     <Routes>
-      {/* Root redirect */}
-      <Route path="/" element={<GuestRoute><Navigate to="/login" replace /></GuestRoute>} />
+      {/* Landing Page (B1) */}
+      <Route path="/" element={<LandingPage />} />
       <Route path="/dashboard" element={<ProtectedRoute><Navigate to="/home" replace /></ProtectedRoute>} />
 
       {/* Guest Authentication Routes */}
@@ -73,7 +79,7 @@ function App() {
       </Route>
 
       {/* Catch-all fallback */}
-      <Route path="*" element={<Navigate to="/home" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

@@ -189,7 +189,7 @@ const Enrolled = () => {
                       )}
                     </div>
                     <p className="text-xs text-gray-500 mt-1">
-                      {society?.college || "NSUT"}
+                      {society?.college?.shortCode || society?.college?.name || (typeof society?.college === "string" ? society?.college : "College")}
                     </p>
                   </div>
 

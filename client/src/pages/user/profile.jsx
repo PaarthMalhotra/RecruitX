@@ -10,22 +10,37 @@ const Profile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
+  const [colleges, setColleges] = useState([]);
 
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm();
 
   useEffect(() => {
-    const loadProfile = async () => {
+    const loadData = async () => {
       try {
-        const res = await getrequest(`${import.meta.env.VITE_API_URL}/api/user/getuserdetails`);
-        const details = res.details || res;
+        setLoading(true);
+        const [profileRes, collegesRes] = await Promise.all([
+          getrequest(`${import.meta.env.VITE_API_URL}/api/user/getuserdetails`),
+          getrequest(`${import.meta.env.VITE_API_URL}/api/colleges`),
+        ]);
+
+        if (collegesRes?.colleges) {
+          setColleges(collegesRes.colleges);
+        } else if (Array.isArray(collegesRes)) {
+          setColleges(collegesRes);
+        }
+
+        const details = profileRes.details || profileRes;
         if (details) {
           if (details.dob) {
             details.dob = details.dob.split("T")[0];
+          }
+          if (details.college?._id) {
+            details.college = details.college._id;
           }
           reset(details);
           dispatch(setUserDetails(details));
@@ -36,394 +51,211 @@ const Profile = () => {
         setLoading(false);
       }
     };
-    loadProfile();
+    loadData();
   }, [reset, dispatch]);
 
   const onSubmit = async (data) => {
-    const response = await postrequest(
-      `${import.meta.env.VITE_API_URL}/api/user/createuserprofile`,
-      data
-    );
+    try {
+      const response = await postrequest(
+        `${import.meta.env.VITE_API_URL}/api/user/createuserprofile`,
+        data
+      );
 
-    if (response.success) {
-      toast.success("Profile Details Updated Successfully");
-      dispatch(setUserDetails(data));
-      navigate("/home");
-    } else {
-      toast.error(response.message || "Failed to update profile");
+      if (response.success) {
+        toast.success("Profile Details Updated Successfully");
+        dispatch(setUserDetails(data));
+        navigate("/home");
+      } else {
+        toast.error(response.message || "Failed to update profile");
+      }
+    } catch (err) {
+      toast.error("Failed to save profile changes");
     }
   };
 
+  if (loading) {
+    return (
+      <div className="w-full max-w-2xl mx-auto py-10 space-y-4 animate-pulse">
+        <div className="h-8 bg-gray-200 rounded-xl w-48"></div>
+        <div className="h-96 bg-white rounded-2xl border border-black/10"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full flex items-center justify-center py-4">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="
-          w-full max-w-3xl
-          flex flex-col
-          gap-5
-          rounded-2xl
-          border border-[#deded0]
-          bg-[#fffef5]
-          p-7
-          shadow-[0_4px_20px_rgba(0,0,0,0.05)]
-        "
-      >
-        <h2 className="text-2xl font-semibold text-black">
-          User Profile!
-        </h2>
+    <div className="w-full max-w-2xl mx-auto py-4 font-sans text-gray-900">
+      <div className="bg-white rounded-2xl border border-black/10 p-6 sm:p-10 shadow-xs space-y-6">
+        <div>
+          <h1 className="text-2xl font-extrabold text-black tracking-tight">
+            Academic Profile
+          </h1>
+          <p className="text-xs text-gray-500 mt-1">
+            Keep your student academic and contact details up-to-date for society recruitment evaluations.
+          </p>
+        </div>
 
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="w-full">
-            <input
-              type="text"
-              placeholder="First Name"
-              {...register("f_name", {
-                required: "First Name is required",
-              })}
-              className="
-                w-full
-                p-3.5
-                rounded-lg
-                border border-[#d8d8cc]
-                text-black
-                outline-none
-                placeholder:text-gray-400
-                focus:border-black
-                transition
-              "
-            />
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="w-full">
+              <label className="block text-xs font-semibold text-gray-700 mb-1">First Name *</label>
+              <input
+                type="text"
+                placeholder="First Name"
+                {...register("f_name", { required: "First Name is required" })}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black focus:outline-none focus:border-black transition"
+              />
+              {errors.f_name && <p className="mt-1 text-xs text-red-600">{errors.f_name.message}</p>}
+            </div>
 
-            {errors.f_name && (
-              <p className="mt-1.5 text-sm text-red-500">
-                {errors.f_name.message}
-              </p>
-            )}
+            <div className="w-full">
+              <label className="block text-xs font-semibold text-gray-700 mb-1">Last Name *</label>
+              <input
+                type="text"
+                placeholder="Last Name"
+                {...register("l_name", { required: "Last Name is required" })}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black focus:outline-none focus:border-black transition"
+              />
+              {errors.l_name && <p className="mt-1 text-xs text-red-600">{errors.l_name.message}</p>}
+            </div>
           </div>
 
-          <div className="w-full">
-            <input
-              type="text"
-              placeholder="Last Name"
-              {...register("l_name", {
-                required: "Last Name is required",
-              })}
-              className="
-                w-full
-                p-3.5
-                rounded-lg
-                border border-[#d8d8cc]
-                text-black
-                outline-none
-                placeholder:text-gray-400
-                focus:border-black
-                transition
-              "
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">Date of Birth</label>
+              <input
+                type="date"
+                {...register("dob")}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black focus:outline-none focus:border-black transition"
+              />
+            </div>
 
-            {errors.l_name && (
-              <p className="mt-1.5 text-sm text-red-500">
-                {errors.l_name.message}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <input
-            type="date"
-            {...register("dob")}
-            className="
-              w-full
-              p-3.5
-              rounded-lg
-              border border-[#d8d8cc]
-              text-black
-              outline-none
-              focus:border-black
-              transition
-            "
-          />
-
-          {errors.dob && (
-            <p className="mt-1.5 text-sm text-red-500">
-              {errors.dob.message}
-            </p>
-          )}
-        </div>
-
-        <div>
-          <input
-            type="tel"
-            placeholder="Phone Number"
-            {...register("p_number", {
-              required: "Phone Number is required",
-              pattern: {
-                value: /^\d{10}$/,
-                message: "Please provide a 10 digit number",
-              },
-            })}
-            className="
-              w-full
-              p-3.5
-              rounded-lg
-              border border-[#d8d8cc]
-              text-black
-              outline-none
-              placeholder:text-gray-400
-              focus:border-black
-              transition
-            "
-          />
-
-          {errors.p_number && (
-            <p className="mt-1.5 text-sm text-red-500">
-              {errors.p_number.message}
-            </p>
-          )}
-        </div>
-
-        <div>
-          <input
-            type="text"
-            value="NSUT"
-            readOnly
-            {...register("college")}
-            className="
-              w-full
-              p-3.5
-              rounded-lg
-              border border-[#d8d8cc]
-              bg-gray-100
-              text-black
-              outline-none
-            "
-          />
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="w-full">
-            <input
-              type="number"
-              placeholder="Batch Start (e.g. 2025)"
-              {...register("batch_start", {
-                required: "Batch start is required",
-                min: {
-                  value: 2000,
-                  message: "Batch start must be between 2000 and 2100",
-                },
-                max: {
-                  value: 2100,
-                  message: "Batch start must be between 2000 and 2100",
-                },
-              })}
-              className="
-                w-full
-                p-3.5
-                rounded-lg
-                border border-[#d8d8cc]
-                text-black
-                outline-none
-                placeholder:text-gray-400
-                focus:border-black
-                transition
-              "
-            />
-
-            {errors.batch_start && (
-              <p className="mt-1.5 text-sm text-red-500">
-                {errors.batch_start.message}
-              </p>
-            )}
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">Phone Number *</label>
+              <input
+                type="tel"
+                placeholder="10 digit number"
+                {...register("p_number", {
+                  required: "Phone Number is required",
+                  pattern: { value: /^\d{10}$/, message: "Please provide a 10 digit number" },
+                })}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black focus:outline-none focus:border-black transition"
+              />
+              {errors.p_number && <p className="mt-1 text-xs text-red-600">{errors.p_number.message}</p>}
+            </div>
           </div>
 
-          <div className="w-full">
-            <input
-              type="number"
-              placeholder="Batch End (e.g. 2029)"
-              {...register("batch_end", {
-                required: "Batch end is required",
-                min: {
-                  value: 2000,
-                  message: "Batch end must be between 2000 and 2100",
-                },
-                max: {
-                  value: 2100,
-                  message: "Batch end must be between 2000 and 2100",
-                },
-              })}
-              className="
-                w-full
-                p-3.5
-                rounded-lg
-                border border-[#d8d8cc]
-                text-black
-                outline-none
-                placeholder:text-gray-400
-                focus:border-black
-                transition
-              "
-            />
-
-            {errors.batch_end && (
-              <p className="mt-1.5 text-sm text-red-500">
-                {errors.batch_end.message}
-              </p>
-            )}
+          {/* Predefined College Dropdown (replaces hardcoded NSUT readonly) */}
+          <div>
+            <label className="block text-xs font-semibold text-gray-700 mb-1">College / University *</label>
+            <select
+              {...register("college", { required: "College is required" })}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black bg-white focus:outline-none focus:border-black transition cursor-pointer"
+            >
+              <option value="">-- Choose college --</option>
+              {colleges.map((col) => (
+                <option key={col._id} value={col._id}>
+                  {col.shortCode ? `${col.shortCode} - ` : ""}
+                  {col.name} {col.city ? `(${col.city})` : ""}
+                </option>
+              ))}
+            </select>
+            {errors.college && <p className="mt-1 text-xs text-red-600">{errors.college.message}</p>}
           </div>
-        </div>
 
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">Batch Start Year *</label>
+              <input
+                type="number"
+                placeholder="e.g. 2024"
+                {...register("batch_start", {
+                  required: "Batch start is required",
+                  min: { value: 2000, message: "Min year is 2000" },
+                  max: { value: 2100, message: "Max year is 2100" },
+                })}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black focus:outline-none focus:border-black transition"
+              />
+              {errors.batch_start && <p className="mt-1 text-xs text-red-600">{errors.batch_start.message}</p>}
+            </div>
 
-        <div>
-          <input
-            type="text"
-            placeholder="Roll No. (2025-XYZ-1234)"
-            {...register("roll_no", {
-              required: "Roll Number is required",
-              pattern: {
-                value: /^\d{4}-[A-Za-z]{3}-\d{4}$/,
-                message:
-                  "Roll No should be in the format 2025-XYZ-1234",
-              },
-            })}
-            className="
-              w-full
-              p-3.5
-              rounded-lg
-              border border-[#d8d8cc]
-              text-black
-              outline-none
-              placeholder:text-gray-400
-              focus:border-black
-              transition
-            "
-          />
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">Batch End Year *</label>
+              <input
+                type="number"
+                placeholder="e.g. 2028"
+                {...register("batch_end", {
+                  required: "Batch end is required",
+                  min: { value: 2000, message: "Min year is 2000" },
+                  max: { value: 2100, message: "Max year is 2100" },
+                })}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black focus:outline-none focus:border-black transition"
+              />
+              {errors.batch_end && <p className="mt-1 text-xs text-red-600">{errors.batch_end.message}</p>}
+            </div>
+          </div>
 
-          {errors.roll_no && (
-            <p className="mt-1.5 text-sm text-red-500">
-              {errors.roll_no.message}
-            </p>
-          )}
-        </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">Roll Number</label>
+              <input
+                type="text"
+                placeholder="e.g. 2025-XYZ-1234"
+                {...register("roll_no")}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black focus:outline-none focus:border-black transition"
+              />
+            </div>
 
-        <div>
-          <input
-            type="text"
-            placeholder="Branch"
-            {...register("branch", {
-              required: "Branch is required",
-            })}
-            className="
-              w-full
-              p-3.5
-              rounded-lg
-              border border-[#d8d8cc]
-              text-black
-              outline-none
-              placeholder:text-gray-400
-              focus:border-black
-              transition
-            "
-          />
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">Branch / Degree</label>
+              <input
+                type="text"
+                placeholder="e.g. Computer Engineering"
+                {...register("branch")}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black focus:outline-none focus:border-black transition"
+              />
+            </div>
+          </div>
 
-          {errors.branch && (
-            <p className="mt-1.5 text-sm text-red-500">
-              {errors.branch.message}
-            </p>
-          )}
-        </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">GitHub Profile</label>
+              <input
+                type="url"
+                placeholder="https://github.com/..."
+                {...register("github")}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black focus:outline-none focus:border-black transition"
+              />
+            </div>
 
-        {/* GitHub */}
-        <div>
-          <input
-            type="url"
-            placeholder="GitHub Profile URL"
-            {...register("github")}
-            className="
-              w-full
-              p-3.5
-              rounded-lg
-              border border-[#d8d8cc]
-              text-black
-              outline-none
-              placeholder:text-gray-400
-              focus:border-black
-              transition
-            "
-          />
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">LinkedIn Profile</label>
+              <input
+                type="url"
+                placeholder="https://linkedin.com/in/..."
+                {...register("linkdin")}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black focus:outline-none focus:border-black transition"
+              />
+            </div>
+          </div>
 
-          {errors.github && (
-            <p className="mt-1.5 text-sm text-red-500">
-              {errors.github.message}
-            </p>
-          )}
-        </div>
-
-        {/* LinkedIn */}
-        <div>
-          <input
-            type="url"
-            placeholder="LinkedIn Profile URL"
-            {...register("linkdin")}
-            className="
-              w-full
-              p-3.5
-              rounded-lg
-              border border-[#d8d8cc]
-              text-black
-              outline-none
-              placeholder:text-gray-400
-              focus:border-black
-              transition
-            "
-          />
-
-          {errors.linkdin && (
-            <p className="mt-1.5 text-sm text-red-500">
-              {errors.linkdin.message}
-            </p>
-          )}
-        </div>
-        
-        <button
-          type="submit"
-          className="
-            w-full
-            rounded-lg
-            border-2 border-black/70
-            bg-purple-300
-            p-2.5
-            text-lg
-            font-semibold
-            text-black
-            cursor-pointer
-            transition
-            hover:bg-purple-200
-          "
-        >
-          Submit
-        </button>
-        
-        <button
-         className="
-            w-full
-            rounded-lg
-            border border-black/70
-           
-            p-2.5
-            text-lg
-            font-semibold
-            text-black
-            cursor-pointer
-            transition
-            hover:bg-purple-100
-          " 
-          onClick={()=>{
-            navigate('/home')
-          }}>
-            Cancel
-        </button>
-      </form>
+          <div className="pt-4 flex items-center justify-end gap-3 border-t border-gray-100">
+            <button
+              type="button"
+              onClick={() => navigate("/home")}
+              className="px-4 py-2 rounded-xl text-xs font-medium text-gray-700 hover:bg-gray-100 cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-5 py-2.5 rounded-[11px] text-xs sm:text-sm font-semibold bg-black text-white border border-black hover:bg-white hover:text-black transition-colors duration-200 cursor-pointer disabled:opacity-50"
+            >
+              {isSubmitting ? "Saving..." : "Save Profile"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

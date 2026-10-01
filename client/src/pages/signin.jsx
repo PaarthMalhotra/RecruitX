@@ -1,180 +1,270 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { postrequest } from "../utilitis/fetch";
+import { postrequest, getrequest } from "../utilitis/fetch";
 import { toast } from "sonner";
 
 const Signin = () => {
   const navigate = useNavigate();
-  const [role, setrole] = useState("user");
+  const [role, setRole] = useState("user");
+  const [colleges, setColleges] = useState([]);
+  const [loadingColleges, setLoadingColleges] = useState(true);
+  const [collegeSearch, setCollegeSearch] = useState("");
+
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    setValue,
+    watch,
+    formState: { errors, isSubmitting },
   } = useForm({
     shouldUnregister: true,
   });
 
+  const selectedCollege = watch("college");
+
+  useEffect(() => {
+    const fetchColleges = async () => {
+      try {
+        setLoadingColleges(true);
+        const res = await getrequest(`${import.meta.env.VITE_API_URL}/api/colleges`);
+        if (res && res.colleges) {
+          setColleges(res.colleges);
+        } else if (Array.isArray(res)) {
+          setColleges(res);
+        }
+      } catch (err) {
+        console.error("Failed to load colleges:", err);
+      } finally {
+        setLoadingColleges(false);
+      }
+    };
+    fetchColleges();
+  }, []);
+
   const onSubmit = async (data) => {
     data.role = role;
-    const response = await postrequest(`${import.meta.env.VITE_API_URL}/api/signin`, data);
-    if (response.verified) {
-      toast.success("SignIn Successful");
-      navigate("/login");
-    } else {
-      toast.error("SignIn UnSuccessful");
+    try {
+      const response = await postrequest(`${import.meta.env.VITE_API_URL}/api/signin`, data);
+      if (response.verified) {
+        toast.success("Account created successfully! Please sign in.");
+        navigate("/login");
+      } else {
+        toast.error(response.error_message || "Failed to create account");
+      }
+    } catch (err) {
+      toast.error("Registration request failed");
     }
   };
 
+  const filteredColleges = colleges.filter((c) => {
+    const q = collegeSearch.toLowerCase().trim();
+    if (!q) return true;
+    return (
+      c.name?.toLowerCase().includes(q) ||
+      c.shortCode?.toLowerCase().includes(q) ||
+      c.city?.toLowerCase().includes(q)
+    );
+  });
+
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row items-center justify-center lg:justify-around gap-12 bg-[#FFFFF0] px-6">
-      <div className="flex flex-col items-center lg:items-start">
-        <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold text-black leading-none">
-          Recruit<span className="text-purple-700">X</span>
-        </h1>
-        <span className="text-sm sm:text-base md:text-lg text-gray-500 font-medium tracking-wide mt-2">
-          Recruitment Platform
-        </span>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#fcfcfc] px-4 py-12 font-sans text-gray-900">
+      <div className="w-full max-w-md mb-6 flex items-center justify-between">
+        <Link
+          to="/"
+          className="text-xs font-semibold text-gray-500 hover:text-black transition"
+        >
+          ← Back to RecruitX
+        </Link>
       </div>
 
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="
-      w-full max-w-md
-      flex flex-col
-      gap-5
-      rounded-2xl
-      border border-[#deded0]
-      bg-[#fffef5]
-      p-7
-      shadow-[0_4px_20px_rgba(0,0,0,0.05)]
-    "
-      >
-        <h2 className="text-2xl font-semibold text-black">Welcome!</h2>
+      <div className="w-full max-w-md bg-white rounded-2xl border border-black/10 p-8 shadow-xs space-y-6">
+        <div className="text-center space-y-1">
+          <Link to="/" className="text-3xl font-extrabold tracking-tight text-black inline-block">
+            RecruitX
+          </Link>
+          <h2 className="text-xl font-bold text-gray-950 mt-2">Create an account</h2>
+          <p className="text-xs text-gray-500">
+            Join the recruitment network for your college
+          </p>
+        </div>
 
-        <div className="flex justify-center gap-2 border w-fit mx-auto p-1 rounded-lg bg-gray-50">
+        {/* Role Pill Switcher */}
+        <div className="flex justify-center p-1 rounded-xl bg-[#fafafa] border border-black/5 gap-1">
           <button
             type="button"
-            className={`cursor-pointer px-3 py-1 text-sm rounded-md transition ${role === "user" ? "bg-purple-300 font-semibold text-purple-950 shadow-sm" : "text-gray-600 hover:text-black"}`}
-            onClick={() => setrole("user")}
+            className={`flex-1 py-1.5 px-3 text-xs font-medium rounded-lg transition-colors cursor-pointer ${
+              role === "user"
+                ? "bg-black text-white font-semibold shadow-xs"
+                : "text-gray-600 hover:text-black hover:bg-black/5"
+            }`}
+            onClick={() => setRole("user")}
           >
             Student
           </button>
           <button
             type="button"
-            className={`cursor-pointer px-3 py-1 text-sm rounded-md transition ${role === "member" ? "bg-purple-300 font-semibold text-purple-950 shadow-sm" : "text-gray-600 hover:text-black"}`}
-            onClick={() => setrole("member")}
+            className={`flex-1 py-1.5 px-3 text-xs font-medium rounded-lg transition-colors cursor-pointer ${
+              role === "member"
+                ? "bg-black text-white font-semibold shadow-xs"
+                : "text-gray-600 hover:text-black hover:bg-black/5"
+            }`}
+            onClick={() => setRole("member")}
           >
-            Member
+            Society Member
           </button>
           <button
             type="button"
-            className={`cursor-pointer px-3 py-1 text-sm rounded-md transition ${role === "admin" ? "bg-purple-300 font-semibold text-purple-950 shadow-sm" : "text-gray-600 hover:text-black"}`}
-            onClick={() => setrole("admin")}
+            className={`flex-1 py-1.5 px-3 text-xs font-medium rounded-lg transition-colors cursor-pointer ${
+              role === "admin"
+                ? "bg-black text-white font-semibold shadow-xs"
+                : "text-gray-600 hover:text-black hover:bg-black/5"
+            }`}
+            onClick={() => setRole("admin")}
           >
             Admin
           </button>
         </div>
 
-        <div className="w-full">
-          <input
-            type="email"
-            placeholder="Email"
-            {...register("email", {
-              required: "Email is Required",
-            })}
-            className="
-          w-full
-          p-3.5
-          rounded-lg
-          border border-[#d8d8cc]
-          text-black
-          outline-none
-          placeholder:text-gray-400
-          focus:border-black
-          transition
-        "
-          />
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Name Fields */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                First Name
+              </label>
+              <input
+                type="text"
+                placeholder="John"
+                {...register("f_name", { required: "First name is required" })}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black placeholder:text-gray-400 focus:outline-none focus:border-black transition"
+              />
+              {errors.f_name && (
+                <p className="mt-1 text-xs text-red-600">{errors.f_name.message}</p>
+              )}
+            </div>
 
-          {errors.email && (
-            <p className="mt-1.5 text-sm text-red-500">
-              {errors.email.message}
-            </p>
-          )}
-        </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                Last Name
+              </label>
+              <input
+                type="text"
+                placeholder="Doe"
+                {...register("l_name")}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black placeholder:text-gray-400 focus:outline-none focus:border-black transition"
+              />
+            </div>
+          </div>
 
-        <div className="w-full">
-          <input
-            type="password"
-            placeholder="Password"
-            {...register("inputpassword", {
-              required: "Password is required",
-            })}
-            className="
-                 w-full
-          p-3.5
-          rounded-lg
-          border border-[#d8d8cc]
-          text-black
-          outline-none
-          placeholder:text-gray-400
-          focus:border-black
-          transition
-        "
-          />
-
-          {errors.inputpassword && (
-            <p className="mt-1.5 text-sm text-red-500">
-              {errors.inputpassword.message}
-            </p>
-          )}
-        </div>
-
-        {(role === "member" || role === "admin") && (
-          <div className="w-full">
+          {/* Email */}
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">
+              Email Address
+            </label>
             <input
-              type="text"
-              placeholder={role === "admin" ? "Admin Security Code (recruit)" : "Member Code (recruit)"}
-              {...register("code", {
-                required: "Security Code is required",
-              })}
-              className="w-full p-3.5 rounded-lg border border-[#d8d8cc] text-black outline-none placeholder:text-gray-400 focus:border-black transition"
+              type="email"
+              placeholder="name@university.edu"
+              {...register("email", { required: "Email is required" })}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black placeholder:text-gray-400 focus:outline-none focus:border-black transition"
             />
-
-            {errors.code && (
-              <p className="mt-1.5 text-sm text-red-500">
-                {errors.code.message}
-              </p>
+            {errors.email && (
+              <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>
             )}
           </div>
-        )}
 
-        <button
-          type="submit"
-          className="
-        w-full
-        rounded-lg
-        border-2 border-black/70
-        bg-purple-300
-        p-2.5
-        text-lg
-        font-semibold
-        text-black
-        cursor-pointer
-        transition
-        hover:bg-purple-200
-      "
-        >
-          Create Account
-        </button>
+          {/* Predefined Searchable College Dropdown (A1/B3 requirement) */}
+          {role !== "admin" && (
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                Select College / University
+              </label>
+              {loadingColleges ? (
+                <div className="h-10 bg-gray-100 rounded-xl animate-pulse flex items-center px-3 text-xs text-gray-400">
+                  Loading colleges...
+                </div>
+              ) : (
+                <div className="space-y-1.5">
+                  <select
+                    {...register("college", {
+                      required: role !== "admin" ? "Please select your college" : false,
+                    })}
+                    className="w-full px-3 py-2.5 rounded-xl border border-black/15 text-sm text-black bg-white focus:outline-none focus:border-black transition cursor-pointer"
+                  >
+                    <option value="">-- Choose your college --</option>
+                    {filteredColleges.map((col) => (
+                      <option key={col._id} value={col._id}>
+                        {col.shortCode ? `${col.shortCode} - ` : ""}
+                        {col.name} {col.city ? `(${col.city})` : ""}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              {errors.college && (
+                <p className="mt-1 text-xs text-red-600">{errors.college.message}</p>
+              )}
+            </div>
+          )}
 
-        <Link
-          to="/login"
-          className="text-sm text-center -mt-2 text-black hover:text-purple-800 cursor-pointer outline-none "
-        >
-          Already have an Account
-        </Link>
-      </form>
+          {/* Password */}
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">
+              Password
+            </label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              {...register("inputpassword", {
+                required: "Password is required",
+                minLength: { value: 6, message: "Password must be at least 6 characters" },
+              })}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black placeholder:text-gray-400 focus:outline-none focus:border-black transition"
+            />
+            {errors.inputpassword && (
+              <p className="mt-1 text-xs text-red-600">{errors.inputpassword.message}</p>
+            )}
+          </div>
+
+          {/* Security Passcode for Member / Admin */}
+          {(role === "member" || role === "admin") && (
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                {role === "admin" ? "Platform Admin Security Key" : "Society Coordinator Key"}
+              </label>
+              <input
+                type="password"
+                placeholder="Enter access code (recruit)"
+                {...register("code", { required: "Security key is required" })}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-black/15 text-sm text-black placeholder:text-gray-400 focus:outline-none focus:border-black transition"
+              />
+              {errors.code && (
+                <p className="mt-1 text-xs text-red-600">{errors.code.message}</p>
+              )}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full mt-2 py-2.5 px-4 bg-black text-white text-sm font-semibold rounded-[11px] border border-black hover:bg-white hover:text-black transition-colors duration-200 cursor-pointer disabled:opacity-50"
+          >
+            {isSubmitting ? "Creating account..." : "Complete Registration"}
+          </button>
+        </form>
+
+        <div className="pt-2 border-t border-gray-100 text-center">
+          <p className="text-xs text-gray-500">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="font-semibold text-black hover:underline ml-1"
+            >
+              Sign In
+            </Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
