@@ -1,14 +1,12 @@
 import mongoose from "mongoose";
 
 const societySchema = new mongoose.Schema({
-  userId:{type:mongoose.Types.ObjectId, required:true},
+  userId: { type: mongoose.Types.ObjectId, ref: "Member", required: true },
   name: { type: String, required: true, trim: true },
   college: {
-    type: String,
-    enum: ["NSUT"],
-    default: "NSUT",
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "College",
     required: true,
-    trim: true,
   },
   about: { type: String, required: true, trim: true },
   category: {
@@ -42,11 +40,11 @@ const societySchema = new mongoose.Schema({
       ],
       students: [
         {
-          studentId: { type: mongoose.Schema.Types.ObjectId, ref: "userProfile" },
+          studentId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
           status: {
             type: String,
             enum: ["in Progress", "Rejected", "Accepted"],
-            default: "in Progress"
+            default: "in Progress",
           },
         },
       ],

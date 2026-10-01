@@ -8,6 +8,7 @@ import {
   addDepartment,
   removeDepartment,
   changeStatus,
+  getMemberDashboardStats,
 } from "../Controllers/SocietyControllers.js";
 
 const router = express.Router();
@@ -15,6 +16,7 @@ const router = express.Router();
 router.get("/displayallsociety", protectedRoute, displayAllSociety);
 router.get("/displaysociety/:SocietyId", protectedRoute, displaySociety);
 router.get("/mysociety", protectedRoute, checkMember, getMySociety);
+router.get("/dashboardstats", protectedRoute, checkMember, getMemberDashboardStats);
 
 router.post("/createsociety", protectedRoute, checkMember, createSociety);
 router.patch("/adddepartment", protectedRoute, checkMember, addDepartment);
@@ -23,4 +25,4 @@ router.delete("/removedepartment", protectedRoute, checkMember, removeDepartment
 router.patch("/changestatus", protectedRoute, checkMember, changeStatus);
 router.post("/changestatus", protectedRoute, checkMember, changeStatus);
 
-export default router; 
+export default router;
