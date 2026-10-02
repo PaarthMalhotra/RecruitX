@@ -47,6 +47,11 @@ const SocietyDetail = () => {
     );
   }
 
+  const collegeDisplay =
+    society.college?.name ||
+    society.college?.shortCode ||
+    (typeof society.college === "string" ? society.college : "Institution");
+
   return (
     <div className="w-full max-w-7xl mx-auto pb-8 space-y-4 font-sans text-m3-text">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
@@ -84,7 +89,7 @@ const SocietyDetail = () => {
               </span>
             </div>
             <p className="text-xs text-m3-muted mt-1.5">
-              College: <strong className="text-m3-text">{society.college}</strong> • Registration Starts: <strong className="text-m3-text">{society.startdate ? society.startdate.split("T")[0] : "TBA"}</strong>
+              College: <strong className="text-m3-text">{collegeDisplay}</strong> • Registration Starts: <strong className="text-m3-text">{society.startdate ? society.startdate.split("T")[0] : "TBA"}</strong>
             </p>
           </div>
         </div>

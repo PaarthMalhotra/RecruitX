@@ -96,6 +96,11 @@ const SocietyPage = () => {
     );
   }
 
+  const collegeDisplay =
+    details.college?.name ||
+    details.college?.shortCode ||
+    (typeof details.college === "string" ? details.college : "Institution");
+
   return (
     <div className="w-full max-w-7xl mx-auto pb-8 space-y-4 font-sans text-m3-text">
       <div className="flex items-center justify-between">
@@ -125,7 +130,7 @@ const SocietyPage = () => {
               </span>
             </div>
             <div className="flex items-center gap-4 text-xs sm:text-sm text-m3-muted mt-2">
-              <span>🏛️ College: <strong className="text-m3-text font-semibold">{details.college}</strong></span>
+              <span>🏛️ College: <strong className="text-m3-text font-semibold">{collegeDisplay}</strong></span>
               <span>•</span>
               <span>📅 Registration Starts: <strong className="text-m3-text font-semibold">{details.startdate ? details.startdate.split('T')[0] : 'TBA'}</strong></span>
             </div>
