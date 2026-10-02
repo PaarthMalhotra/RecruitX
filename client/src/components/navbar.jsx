@@ -43,7 +43,6 @@ const Navbar = () => {
     userState?.role || localStorage.getItem("recruitx_role") || "user";
   const userDetails = userState?.details;
 
-  // Click outside listener for profile menu
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (profileMenuRef.current && !profileMenuRef.current.contains(e.target)) {
@@ -100,7 +99,6 @@ const Navbar = () => {
   return (
     <nav className="w-full bg-surface rounded-2xl sm:rounded-full px-5 sm:px-8 py-3 border border-m3-border/70 shadow-xs relative">
       <div className="flex items-center justify-between gap-4">
-        {/* Left: Text Logo */}
         <div className="flex items-center gap-3">
           <Link
             to={isAuthenticated ? "/home" : "/"}
@@ -110,7 +108,6 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Middle: Floating Container for Navigation Links */}
         <div className="hidden md:flex items-center justify-center">
           <div className="bg-field rounded-full px-1.5 py-1 flex items-center gap-1">
             {isAuthenticated ? (
@@ -131,7 +128,6 @@ const Navbar = () => {
                 );
               })
             ) : (
-              // Exactly 2 guest items: Home and About
               <>
                 <button
                   onClick={handleHomeClick}
@@ -150,7 +146,6 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Right: Login or Profile/Logout Button */}
         <div className="flex items-center gap-2.5">
           {!isAuthenticated ? (
             <Link
@@ -209,7 +204,6 @@ const Navbar = () => {
             </div>
           )}
 
-          {/* Mobile hamburger menu toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden p-2 rounded-full border border-m3-border text-m3-muted hover:bg-field focus:outline-none outline-none cursor-pointer"
@@ -222,7 +216,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
         <div className="md:hidden mt-3 pt-3 border-t border-m3-border/60 flex flex-col gap-1">
           {isAuthenticated ? (

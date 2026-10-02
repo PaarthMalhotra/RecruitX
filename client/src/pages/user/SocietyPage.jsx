@@ -20,7 +20,6 @@ const SocietyPage = () => {
       const data = await getrequest(`${import.meta.env.VITE_API_URL}/api/member/displaysociety/${SocietyId}`);
       setDetails(data);
 
-      // Fetch user's applied societies to check enrollment status
       if (userRole === "user") {
         const applications = await getrequest(`${import.meta.env.VITE_API_URL}/api/user/allappliedsociety`);
         if (Array.isArray(applications)) {
@@ -99,7 +98,6 @@ const SocietyPage = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto pb-8 space-y-4 font-sans text-m3-text">
-      {/* Top Bar with Back Button */}
       <div className="flex items-center justify-between">
         <button
           onClick={() => navigate(-1)}
@@ -115,7 +113,6 @@ const SocietyPage = () => {
         )}
       </div>
 
-      {/* Society Hero Card */}
       <div className="bg-surface rounded-2xl border border-m3-border/60 p-6 sm:p-8 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
@@ -143,7 +140,6 @@ const SocietyPage = () => {
         </div>
       </div>
 
-      {/* Departments Section */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
@@ -183,7 +179,6 @@ const SocietyPage = () => {
                       </p>
                     </div>
 
-                    {/* Right action / status */}
                     <div className="shrink-0 flex items-center gap-3">
                       {isEnrolled ? (
                         <div className="flex items-center gap-2">
@@ -220,7 +215,6 @@ const SocietyPage = () => {
                     </div>
                   </div>
 
-                  {/* Recruitment Rounds Sub-section */}
                   {dept.rounds && dept.rounds.length > 0 && (
                     <div className="pt-4 border-t border-m3-border/40">
                       <h4 className="text-xs font-bold uppercase tracking-wider text-m3-muted mb-2.5">

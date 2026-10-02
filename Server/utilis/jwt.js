@@ -13,7 +13,7 @@ export const createJWT = (user, res) => {
       path: "/",
       sameSite: isProduction ? "none" : "lax",
       secure: isProduction,
-      maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
+      maxAge: 1 * 24 * 60 * 60 * 1000,
     });
   } catch (error) {
     console.log("Unexpected erro roccured at JWT")

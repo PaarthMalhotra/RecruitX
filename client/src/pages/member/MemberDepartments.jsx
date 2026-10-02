@@ -121,7 +121,6 @@ const MemberDepartments = () => {
                   </Link>
                 </div>
 
-                {/* Rounds Breakdown */}
                 {dept.rounds && dept.rounds.length > 0 && (
                   <div className="pt-3 border-t border-m3-border/40">
                     <span className="text-xs font-bold uppercase tracking-wider text-m3-muted block mb-2">

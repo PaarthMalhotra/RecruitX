@@ -129,7 +129,6 @@ const CreateSociety = () => {
               </select>
             </div>
 
-            {/* Predefined College Dropdown (No hardcoded NSUT) */}
             <div>
               <label className="block text-xs font-semibold text-m3-text mb-1">
                 College *

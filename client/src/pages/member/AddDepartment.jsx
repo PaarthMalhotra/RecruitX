@@ -163,7 +163,6 @@ const AddDepartment = () => {
             ></textarea>
           </div>
 
-          {/* Recruitment Rounds Sub-form */}
           <div className="pt-2 border-t border-m3-border/40 space-y-4">
             <div className="flex items-center justify-between">
               <div>

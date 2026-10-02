@@ -74,7 +74,6 @@ const Signin = () => {
           </p>
         </div>
 
-        {/* Role Pill Switcher */}
         <div className="flex justify-center p-1 rounded-full bg-field border border-m3-border/40 gap-1">
           <button
             type="button"
@@ -112,7 +111,6 @@ const Signin = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Name Fields */}
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-medium text-m3-muted mb-1">
@@ -142,7 +140,6 @@ const Signin = () => {
             </div>
           </div>
 
-          {/* Email */}
           <div>
             <label className="block text-xs font-medium text-m3-muted mb-1">
               Email Address *
@@ -158,7 +155,6 @@ const Signin = () => {
             )}
           </div>
 
-          {/* Predefined Searchable College Dropdown */}
           {role !== "admin" && (
             <div>
               <label className="block text-xs font-medium text-m3-muted mb-1">
@@ -190,7 +186,6 @@ const Signin = () => {
             </div>
           )}
 
-          {/* Password */}
           <div>
             <label className="block text-xs font-medium text-m3-muted mb-1">
               Password *
@@ -209,7 +204,6 @@ const Signin = () => {
             )}
           </div>
 
-          {/* Security Passcode for Member / Admin */}
           {(role === "member" || role === "admin") && (
             <div>
               <label className="block text-xs font-medium text-m3-muted mb-1">

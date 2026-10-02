@@ -1,8 +1,5 @@
 import { College } from "../Schema/CollegeSchema.js";
 
-/**
- * Public endpoint to fetch all available colleges for dropdown selection.
- */
 export const getColleges = async (req, res) => {
   try {
     const colleges = await College.find().sort({ name: 1 });
@@ -12,10 +9,6 @@ export const getColleges = async (req, res) => {
   }
 };
 
-/**
- * Admin endpoint: Add a new college into the platform directory.
- * Will immediately reflect in the public college list so students and members can select it.
- */
 export const createCollege = async (req, res) => {
   try {
     const { name, shortCode, city } = req.body;
@@ -31,7 +24,6 @@ export const createCollege = async (req, res) => {
     const cleanCode = shortCode.trim().toUpperCase();
     const cleanCity = city ? city.trim() : "";
 
-    // Check if college already exists
     const existing = await College.findOne({
       $or: [
         { name: { $regex: new RegExp(`^${cleanName}$`, "i") } },

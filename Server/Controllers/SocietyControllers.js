@@ -66,7 +66,6 @@ export const createSociety = async (req, res) => {
       return res.status(400).json({ success: false, message: "Please fill all required fields" });
     }
 
-    // Determine and validate college
     let targetCollegeId = college || (req.user && req.user.college?._id) || req.user?.college;
     if (!targetCollegeId) {
       const fallbackCollege = await College.findOne();
@@ -88,7 +87,6 @@ export const createSociety = async (req, res) => {
       departments: [],
     });
 
-    // Link the created society to the Member profile
     await Member.findByIdAndUpdate(userId, { societyId: newSociety._id });
 
     res.status(201).json({ success: true, message: "Society Added", society: newSociety });
@@ -107,7 +105,6 @@ export const deleteSociety = async (req, res) => {
 
     const society = await Society.findById(id);
     if (society) {
-      // Clear member reference
       await Member.updateMany({ societyId: society._id }, { $set: { societyId: null } });
       await Society.deleteOne({ _id: id });
     }
@@ -167,11 +164,6 @@ export const removeDepartment = async (req, res) => {
   }
 };
 
-/**
- * Status change with Resend email notification.
- * Checks previous status to ensure one email per decision, only when status actually changes.
- * Email errors are safely caught and never block the status update.
- */
 export const changeStatus = async (req, res) => {
   try {
     const { societyId, departmentName, studentId, status } = req.body;
@@ -179,7 +171,6 @@ export const changeStatus = async (req, res) => {
     const societyStatus = status === "Approved" || status === "Accepted" ? "Accepted" : status === "Rejected" ? "Rejected" : "in Progress";
     const userStatus = status === "Accepted" || status === "Approved" ? "Approved" : status === "Rejected" ? "Rejected" : "In-Progress";
 
-    // 1. Check existing status to avoid duplicate emails
     const existingSociety = await Society.findOne(
       {
         _id: societyId,
@@ -199,7 +190,6 @@ export const changeStatus = async (req, res) => {
       oldStatus = studentEntry?.status;
     }
 
-    // 2. Update Society collection
     const updatedSociety = await Society.findOneAndUpdate(
       {
         _id: societyId,
@@ -220,7 +210,6 @@ export const changeStatus = async (req, res) => {
       }
     );
 
-    // 3. Synchronize status in student's User profile
     await User.findOneAndUpdate(
       {
         _id: studentId,
@@ -234,7 +223,6 @@ export const changeStatus = async (req, res) => {
       }
     );
 
-    // 4. Send email only if the status actually changed
     const statusChanged = oldStatus !== societyStatus;
 
     if (statusChanged && (societyStatus === "Accepted" || societyStatus === "Rejected")) {
@@ -262,7 +250,6 @@ export const changeStatus = async (req, res) => {
           }
         }
       } catch (emailErr) {
-        // Never break approve/reject action if email fails
         console.error("Non-fatal email notification error:", emailErr.message || emailErr);
       }
     }
@@ -278,10 +265,6 @@ export const changeStatus = async (req, res) => {
   }
 };
 
-/**
- * Aggregation Endpoint: Member Dashboard Stats
- * Returns per-department applicant count, approved count, and summary totals in a single call.
- */
 export const getMemberDashboardStats = async (req, res) => {
   try {
     const memberSociety = await Society.findOne({ userId: req.user._id }).populate("college", "name shortCode city");
@@ -383,20 +366,11 @@ export const getMemberDashboardStats = async (req, res) => {
   }
 };
 
-/**
- * Aggregation Endpoint: Platform Admin Dashboard Stats
- * Aggregates: total colleges, total societies, total applicants;
- * societies per college; applicants per college; applicants per department.
- */
 export const getAdminStats = async (req, res) => {
   try {
-    // 1. Total Colleges
     const totalColleges = await College.countDocuments();
-
-    // 2. Total Societies
     const totalSocieties = await Society.countDocuments();
 
-    // 3. Societies per college aggregation
     const societiesPerCollege = await Society.aggregate([
       {
         $lookup: {
@@ -425,7 +399,6 @@ export const getAdminStats = async (req, res) => {
       { $sort: { count: -1 } },
     ]);
 
-    // 4. Applicants per college & applicants per department
     const applicantAggregations = await Society.aggregate([
       { $unwind: "$departments" },
       { $unwind: "$departments.students" },

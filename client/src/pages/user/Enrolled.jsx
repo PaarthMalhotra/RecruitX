@@ -27,7 +27,6 @@ const Enrolled = () => {
         return;
       }
 
-      // Fetch complete details of every society
       const data = await Promise.all(
         appliedSocieties.map(async (application) => {
           try {
@@ -147,7 +146,6 @@ const Enrolled = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto pb-8 space-y-4 font-sans text-m3-text">
-      {/* Page Heading */}
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-m3-text tracking-tight">
@@ -162,7 +160,6 @@ const Enrolled = () => {
         </span>
       </div>
 
-      {/* Enrollment Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {enrollments.map(({ application, society, department }, index) => {
           const status = application.status || "In-Progress";
@@ -174,7 +171,6 @@ const Enrolled = () => {
               key={`${application.SocietyId}-${application.department}-${index}`}
               className="bg-surface border border-m3-border/60 rounded-2xl p-5 sm:p-6 shadow-xs hover:border-m3-border transition flex flex-col justify-between space-y-5"
             >
-              {/* Society Header */}
               <div>
                 <div className="flex justify-between items-start gap-4">
                   <div>
@@ -193,7 +189,6 @@ const Enrolled = () => {
                     </p>
                   </div>
 
-                  {/* Enrollment Status Badge */}
                   <span
                     className={`shrink-0 px-3 py-1 rounded-full text-xs font-bold border ${
                       isApproved
@@ -207,7 +202,6 @@ const Enrolled = () => {
                   </span>
                 </div>
 
-                {/* Department Details Box */}
                 <div className="mt-4 border border-m3-border/60 rounded-2xl p-4 bg-field/30 space-y-4">
                   <div>
                     <span className="text-[11px] font-bold uppercase tracking-wider text-m3-muted">
@@ -223,7 +217,6 @@ const Enrolled = () => {
                     )}
                   </div>
 
-                  {/* Tab switch between Rounds Info and Resources / Google Form */}
                   {(() => {
                     const cardKey = `${application._id || index}`;
                     const currentTab = cardTabs[cardKey] || "rounds";
@@ -255,7 +248,6 @@ const Enrolled = () => {
                           </button>
                         </div>
 
-                        {/* Content for Rounds Info Tab */}
                         {currentTab === "rounds" && (
                           <div className="space-y-2">
                             <span className="text-xs font-semibold text-m3-text block">
@@ -292,7 +284,6 @@ const Enrolled = () => {
                           </div>
                         )}
 
-                        {/* Content for Resource & Forms Tab */}
                         {currentTab === "resources" && (
                           <div className="space-y-2.5">
                             <span className="text-xs font-semibold text-m3-text block">
@@ -344,7 +335,6 @@ const Enrolled = () => {
                 </div>
               </div>
 
-              {/* Bottom Actions */}
               <div className="pt-2 flex items-center justify-between gap-3 text-xs border-t border-m3-border/40">
                 <div className="flex items-center gap-3">
                   <Link
@@ -355,7 +345,6 @@ const Enrolled = () => {
                   </Link>
                 </div>
 
-                {/* Withdraw application button */}
                 <button
                   onClick={() => setWithdrawTarget({ application, society, department })}
                   className="text-m3-danger hover:bg-red-50 font-semibold cursor-pointer px-3 py-1 rounded-full transition"
@@ -368,7 +357,6 @@ const Enrolled = () => {
         })}
       </div>
 
-      {/* Withdraw Confirmation Modal */}
       {withdrawTarget && (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in">
           <div className="bg-surface rounded-2xl border border-m3-border shadow-2xl max-w-md w-full p-6 space-y-4">

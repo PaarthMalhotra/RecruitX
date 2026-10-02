@@ -29,10 +29,8 @@ if (process.env.CLIENT_URL) {
   }
 }
 
-// ✅ Standard CORS setup
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, curl, Postman)
     if (!origin) return callback(null, true);
 
     const cleanOrigin = origin.trim().replace(/\/$/, "");
@@ -53,16 +51,13 @@ app.use(cors({
   exposedHeaders: ["Set-Cookie"],
 }));
 
-// Body parsing
 app.use(express.json());
 app.use(cookieParser());
 
-// Health check
 app.get('/', (req, res) => {
   res.send("RecruitX API is running");
 });
 
-// Test endpoint for Postman
 app.all('/api/test', (req, res) => {
   res.status(200).json({
     success: true,
@@ -73,7 +68,6 @@ app.all('/api/test', (req, res) => {
   });
 });
 
-// Logout
 app.post('/api/logout', (req, res) => {
   const isProduction = process.env.NODE_ENV === "production";
   res.clearCookie("token", {
@@ -84,10 +78,8 @@ app.post('/api/logout', (req, res) => {
   res.status(200).json({ success: true, message: "Logged out successfully" });
 });
 
-// API routes
 app.use('/api', router);
 
-// Error handler
 app.use((err, req, res, next) => {
   console.error("Unhandled error:", err);
   res.status(500).json({

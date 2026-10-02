@@ -9,14 +9,6 @@ import { Society } from "../Schema/SocietySchema.js";
 
 dotenv.config();
 
-/**
- * Migration Script: Splits legacy userProfile documents into User, Member, and Admin collections.
- * Preserves original _id values so that all references (society.userId, society.departments.students.studentId) remain intact.
- * Also migrates any legacy string college ("NSUT") to College ObjectId.
- *
- * NOTE: DO NOT RUN AUTOMATICALLY. The user must run this manually after data backup:
- * `node utilis/migrateRoles.js`
- */
 export async function runMigration() {
   try {
     await connectDb();
@@ -24,7 +16,6 @@ export async function runMigration() {
 
     const db = mongoose.connection.db;
 
-    // Verify colleges have been seeded first. Must fail with clear error if unseeded.
     const defaultCollege = await College.findOne({ shortCode: "NSUT" });
     if (!defaultCollege) {
       console.error(
@@ -34,7 +25,6 @@ export async function runMigration() {
       process.exit(1);
     }
 
-    // Check if legacy userprofiles collection exists
     const collections = await db.listCollections().toArray();
     const collectionNames = collections.map((c) => c.name);
 
@@ -42,7 +32,6 @@ export async function runMigration() {
       console.log("No legacy 'userprofiles' collection found. Checking if any users collection needs role splitting...");
     }
 
-    // Read all legacy user profiles
     const legacyProfiles = collectionNames.includes("userprofiles")
       ? await db.collection("userprofiles").find({}).toArray()
       : [];
@@ -54,7 +43,6 @@ export async function runMigration() {
     let adminsMigrated = 0;
 
     for (const doc of legacyProfiles) {
-      // Determine college ObjectId
       let collegeId = doc.college;
       if (!collegeId || typeof collegeId === "string") {
         collegeId = defaultCollege._id;
@@ -76,7 +64,6 @@ export async function runMigration() {
         );
         adminsMigrated++;
       } else if (doc.role === "member") {
-        // Find if this member owns any society
         const soc = await Society.findOne({ userId: doc._id });
         await Member.updateOne(
           { _id: doc._id },
@@ -96,7 +83,6 @@ export async function runMigration() {
         );
         membersMigrated++;
       } else {
-        // Default to student user
         await User.updateOne(
           { _id: doc._id },
           {
@@ -125,7 +111,6 @@ export async function runMigration() {
       }
     }
 
-    // Migrate societies with string college to College ObjectId
     const societies = await db.collection("societies").find({}).toArray();
     let societiesUpdated = 0;
     for (const soc of societies) {
@@ -151,7 +136,6 @@ export async function runMigration() {
   }
 }
 
-// Run if called directly from CLI
 if (process.argv[1]?.endsWith("migrateRoles.js")) {
   runMigration();
 }

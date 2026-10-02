@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
 
-// Format: { [key: string]: { label: string, color?: string, icon?: React.ComponentType } }
 const ChartContext = React.createContext(null);
 
 function useChart() {

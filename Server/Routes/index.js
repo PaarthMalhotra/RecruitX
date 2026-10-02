@@ -12,7 +12,6 @@ router.use("/user", userRoute);
 router.use("/member", memberRoute);
 router.use("/admin", adminRoute);
 
-// Public routes for auth and college list
 router.get("/colleges", getColleges);
 router.post("/login", checkToken, login);
 router.post("/signin", checkToken, signin);

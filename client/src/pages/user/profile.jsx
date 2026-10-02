@@ -144,7 +144,6 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Predefined College Dropdown (replaces hardcoded NSUT readonly) */}
           <div>
             <label className="block text-xs font-semibold text-m3-text mb-1">College / University *</label>
             <select

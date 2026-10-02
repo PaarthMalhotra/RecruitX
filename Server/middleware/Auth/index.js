@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { getModelByRole } from "../../utilis/getModelByRole.js";
-import { College } from "../../Schema/CollegeSchema.js"; // Ensures College model is registered
+import { College } from "../../Schema/CollegeSchema.js";
 
 export const protectedRoute = async (req, res, next) => {
   try {
@@ -19,7 +19,6 @@ export const protectedRoute = async (req, res, next) => {
     const Model = getModelByRole(decoded.role);
     let query = Model.findById(decoded._id).select("-password");
 
-    // Only populate college if the role schema actually has a college field
     if (decoded.role !== "admin") {
       query = query.populate("college");
     }
@@ -37,7 +36,6 @@ export const protectedRoute = async (req, res, next) => {
 };
 
 export const checkToken = (req, res, next) => {
-  // Allow login and signin requests to proceed and establish or refresh session
   next();
 };
 

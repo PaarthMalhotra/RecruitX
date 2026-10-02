@@ -16,7 +16,6 @@ router.get("/displaysociety/:SocietyId", protectedRoute, checkAdmin, displaySoci
 router.delete("/deletesociety/:_id", protectedRoute, checkAdmin, deleteSociety);
 router.delete("/deletesociety", protectedRoute, checkAdmin, deleteSociety);
 
-// College management for platform admin
 router.get("/colleges", protectedRoute, checkAdmin, getColleges);
 router.post("/colleges", protectedRoute, checkAdmin, createCollege);
 

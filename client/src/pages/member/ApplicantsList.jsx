@@ -49,7 +49,6 @@ const ApplicantsList = () => {
       if (res.success) {
         toast.success(`Applicant status updated to ${newStatus}`);
 
-        // Update local state smoothly without full reload
         setSociety((prev) => {
           if (!prev) return prev;
           const updatedDepts = prev.departments.map((dept) => {
@@ -102,7 +101,6 @@ const ApplicantsList = () => {
     );
   }
 
-  // Flatten all applicants across departments
   const allApplicants = [];
   society.departments?.forEach((dept) => {
     dept.students?.forEach((st) => {
@@ -113,7 +111,6 @@ const ApplicantsList = () => {
     });
   });
 
-  // B6.5 Filter: The search box must search BY STUDENT NAME ONLY (partial & case-insensitive)
   const filteredApplicants = allApplicants.filter((item) => {
     const student = item.studentId || {};
     const matchesDept = selectedDeptFilter === "All" || item.departmentName === selectedDeptFilter;
@@ -126,7 +123,6 @@ const ApplicantsList = () => {
         : "In Progress";
     const matchesStatus = statusFilter === "All" || normalizedStatus === statusFilter;
 
-    // Search by student name ONLY
     const q = searchQuery.toLowerCase().trim();
     const fullName = `${student.f_name || ""} ${student.l_name || ""}`.trim().toLowerCase();
     const matchesSearch = !q || fullName.includes(q);
@@ -136,7 +132,6 @@ const ApplicantsList = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto pb-8 space-y-4 font-sans text-m3-text">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
         <div>
           <div className="flex items-center gap-2 text-xs text-m3-muted">
@@ -159,9 +154,7 @@ const ApplicantsList = () => {
         </span>
       </div>
 
-      {/* Filter and Search Bar */}
       <div className="bg-surface rounded-2xl border border-m3-border/60 p-4 shadow-xs flex flex-col md:flex-row items-center justify-between gap-3">
-        {/* Search input: Student name only */}
         <div className="relative w-full md:w-80">
           <input
             type="text"
@@ -173,7 +166,6 @@ const ApplicantsList = () => {
         </div>
 
         <div className="flex items-center gap-2.5 w-full md:w-auto overflow-x-auto">
-          {/* Department Filter */}
           <select
             value={selectedDeptFilter}
             onChange={(e) => setSelectedDeptFilter(e.target.value)}
@@ -187,7 +179,6 @@ const ApplicantsList = () => {
             ))}
           </select>
 
-          {/* Status Filter */}
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
@@ -201,7 +192,6 @@ const ApplicantsList = () => {
         </div>
       </div>
 
-      {/* Applicants Table */}
       <div className="bg-surface rounded-2xl border border-m3-border/60 shadow-xs overflow-hidden">
         {filteredApplicants.length === 0 ? (
           <div className="p-12 text-center space-y-2">
@@ -241,7 +231,6 @@ const ApplicantsList = () => {
 
                   return (
                     <tr key={`${studentId}-${item.departmentName}-${idx}`} className="hover:bg-field/40 transition">
-                      {/* Student Info */}
                       <td className="py-3.5 px-4">
                         <div>
                           <p className="font-bold text-m3-text">
@@ -254,21 +243,18 @@ const ApplicantsList = () => {
                         </div>
                       </td>
 
-                      {/* Department */}
                       <td className="py-3.5 px-4">
                         <span className="font-semibold text-m3-text block">
                           {item.departmentName}
                         </span>
                       </td>
 
-                      {/* Academic Info */}
                       <td className="py-3.5 px-4 text-xs text-m3-muted space-y-0.5">
                         <p><strong className="text-m3-text font-medium">Roll:</strong> {student.roll_no || "—"}</p>
                         <p><strong className="text-m3-text font-medium">Branch:</strong> {student.branch || "—"}</p>
                         <p><strong className="text-m3-text font-medium">College:</strong> {collegeDisplay}</p>
                       </td>
 
-                      {/* Current Status */}
                       <td className="py-3.5 px-4 text-center">
                         <span
                           className={`inline-block px-3 py-1 rounded-full text-xs font-semibold border ${
@@ -283,7 +269,6 @@ const ApplicantsList = () => {
                         </span>
                       </td>
 
-                      {/* Action Buttons: Approve / Reject (Triggers Resend email notifications) */}
                       <td className="py-3.5 px-4 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <button

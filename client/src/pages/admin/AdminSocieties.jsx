@@ -9,7 +9,6 @@ const AdminSocieties = () => {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
 
-  // Deletion Modal state
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -53,7 +52,6 @@ const AdminSocieties = () => {
     }
   };
 
-  // B7.2: Search box searches SOCIETY NAME ONLY
   const filtered = societies.filter((s) => {
     const matchesCat = categoryFilter === "All" || s.category === categoryFilter;
     const q = search.toLowerCase().trim();
@@ -61,7 +59,6 @@ const AdminSocieties = () => {
     return matchesCat && matchesQuery;
   });
 
-  // B7.2: Group societies by college name
   const groupedByCollege = filtered.reduce((acc, soc) => {
     const colName =
       soc.college?.name ||
@@ -78,7 +75,6 @@ const AdminSocieties = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto pb-10 space-y-6 font-sans text-m3-text">
-      {/* Top Header */}
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
         <div>
           <div className="flex items-center gap-2 text-xs text-m3-muted mb-1">
@@ -99,7 +95,6 @@ const AdminSocieties = () => {
         </span>
       </div>
 
-      {/* Filter and Search Bar: searches society name ONLY */}
       <div className="bg-surface rounded-2xl border border-m3-border/60 p-4 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="w-full sm:w-80">
           <input
@@ -127,7 +122,6 @@ const AdminSocieties = () => {
         </div>
       </div>
 
-      {/* B7.2: Grouped by College Name, all societies always visible (NO expand/collapse) */}
       {loading ? (
         <div className="space-y-4">
           {[1, 2].map((n) => (
@@ -145,7 +139,6 @@ const AdminSocieties = () => {
         <div className="space-y-6">
           {collegeGroups.map(([collegeName, socList]) => (
             <div key={collegeName} className="bg-surface rounded-2xl border border-m3-border/60 shadow-xs overflow-hidden">
-              {/* College Group Header */}
               <div className="px-6 py-4 bg-field border-b border-m3-border flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                   <h2 className="text-base font-bold text-m3-text">{collegeName}</h2>
@@ -155,7 +148,6 @@ const AdminSocieties = () => {
                 </span>
               </div>
 
-              {/* Society List Table - All always visible */}
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
@@ -191,7 +183,6 @@ const AdminSocieties = () => {
                             {soc.departments?.length || 0}
                           </span>
                         </td>
-                        {/* Right: Delete and View buttons */}
                         <td className="py-3.5 px-6 text-right">
                           <div className="flex items-center justify-end gap-2">
                             <Link
@@ -218,7 +209,6 @@ const AdminSocieties = () => {
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in">
           <div className="bg-surface rounded-2xl border border-m3-border shadow-2xl max-w-md w-full p-6 space-y-4">

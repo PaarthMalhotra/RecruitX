@@ -46,7 +46,6 @@ export async function seedColleges() {
   }
 }
 
-// If invoked directly from CLI
 if (process.argv[1]?.endsWith("seedColleges.js")) {
   seedColleges();
 }

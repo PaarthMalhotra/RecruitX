@@ -41,14 +41,12 @@ const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // College addition modal state (Admin feature)
   const [showAddCollege, setShowAddCollege] = useState(false);
   const [collegeName, setCollegeName] = useState("");
   const [collegeShortCode, setCollegeShortCode] = useState("");
   const [collegeCity, setCollegeCity] = useState("");
   const [submittingCollege, setSubmittingCollege] = useState(false);
 
-  // Single aggregated endpoint call (A4 rule: 1 call per dashboard, no spamming)
   const fetchAdminStats = async () => {
     try {
       setLoading(true);
@@ -89,7 +87,6 @@ const AdminDashboard = () => {
         setCollegeName("");
         setCollegeShortCode("");
         setCollegeCity("");
-        // Refresh admin stats to reflect the new college
         fetchAdminStats();
       } else {
         toast.error(res?.message || res?.error || "Failed to add college");
@@ -136,7 +133,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto pb-10 space-y-6 font-sans text-m3-text">
-      {/* Top Header */}
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-m3-text">
@@ -163,7 +159,6 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* B7: 3 Summary Cards - TOTAL COLLEGES, TOTAL SOCIETIES, TOTAL APPLICANTS */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-surface rounded-2xl border border-m3-border/60 p-5 shadow-xs">
           <p className="text-xs font-semibold uppercase tracking-wider text-m3-muted">
@@ -202,9 +197,7 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* B7.1: 3 Charts using shadcn/ui Chart component */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        {/* Chart 1: Bar chart: total societies per college */}
         <div className="bg-surface rounded-2xl border border-m3-border/60 p-5 shadow-xs flex flex-col justify-between">
           <div className="mb-3">
             <h3 className="text-sm font-bold text-m3-text">Societies per College</h3>
@@ -238,7 +231,6 @@ const AdminDashboard = () => {
           )}
         </div>
 
-        {/* Chart 2: Pie chart: applicants per college */}
         <div className="bg-surface rounded-2xl border border-m3-border/60 p-5 shadow-xs flex flex-col justify-between">
           <div className="mb-3">
             <h3 className="text-sm font-bold text-m3-text">Applicants per College</h3>
@@ -281,7 +273,6 @@ const AdminDashboard = () => {
           )}
         </div>
 
-        {/* Chart 3: Pie chart: total applicants per department */}
         <div className="bg-surface rounded-2xl border border-m3-border/60 p-5 shadow-xs flex flex-col justify-between">
           <div className="mb-3">
             <h3 className="text-sm font-bold text-m3-text">Applicants per Department</h3>
@@ -325,7 +316,6 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Add College Modal (Admin feature requested) */}
       {showAddCollege && (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in">
           <div className="bg-surface rounded-2xl border border-m3-border shadow-2xl max-w-md w-full p-6 space-y-4">

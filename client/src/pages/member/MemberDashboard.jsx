@@ -16,7 +16,6 @@ const MemberDashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Single aggregated endpoint call (A4 rule: 1 call per dashboard, no spamming)
   const fetchDashboardStats = async () => {
     try {
       setLoading(true);
@@ -52,7 +51,6 @@ const MemberDashboard = () => {
     );
   }
 
-  // If member has no society created yet
   if (!data?.hasSociety) {
     return (
       <div className="w-full max-w-7xl mx-auto pt-6">
@@ -83,7 +81,6 @@ const MemberDashboard = () => {
   const stats = data.stats || {};
   const departmentStats = stats.departmentStats || [];
 
-  // Prepare chart data for department applicants
   const chartData = departmentStats.map((dept) => ({
     department: dept.departmentName,
     totalStudents: dept.totalStudents || 0,
@@ -92,7 +89,6 @@ const MemberDashboard = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto pb-8 space-y-6 font-sans text-m3-text">
-      {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-m3-text">
@@ -120,7 +116,6 @@ const MemberDashboard = () => {
         </div>
       </div>
 
-      {/* KPI Stats Cards - Exactly 3 Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-surface rounded-[16px] border border-m3-border/70 p-5 shadow-xs">
           <p className="text-xs font-semibold text-m3-muted uppercase tracking-wider">
@@ -159,7 +154,6 @@ const MemberDashboard = () => {
         </div>
       </div>
 
-      {/* B6.1: shadcn/ui Chart Component - Single series bar chart using #0B57D0 */}
       <div className="bg-surface rounded-[16px] border border-m3-border/70 p-6 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-m3-border/40 gap-2">
           <div>
@@ -205,7 +199,6 @@ const MemberDashboard = () => {
         )}
       </div>
 
-      {/* B6.3: Department Enrolled Status with Table headers using #EAF1FB */}
       <div className="bg-surface rounded-[16px] border border-m3-border/70 p-6 shadow-xs space-y-4">
         <div className="pb-3 border-b border-m3-border/40">
           <h2 className="text-base sm:text-lg font-bold text-m3-text">

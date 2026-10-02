@@ -38,7 +38,6 @@ const Avatar = () => {
     getUser();
   }, [dispatch]);
 
-  // Click outside listener for dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {

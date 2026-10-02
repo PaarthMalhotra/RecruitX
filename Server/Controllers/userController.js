@@ -3,9 +3,6 @@ import { Society } from "../Schema/SocietySchema.js";
 import { College } from "../Schema/CollegeSchema.js";
 import { getModelByRole } from "../utilis/getModelByRole.js";
 
-/**
- * Returns all societies the student has applied to.
- */
 export const allappliedSociety = async (req, res) => {
   try {
     const student = await User.findById(req.user._id);
@@ -15,16 +12,11 @@ export const allappliedSociety = async (req, res) => {
   }
 };
 
-/**
- * Returns details of the currently authenticated account (User, Member, or Admin)
- * with college populated when available. Used by Avatar, profile, etc.
- */
 export const userDetails = async (req, res) => {
   try {
     const Model = getModelByRole(req.user.role);
     let query = Model.findById(req.user._id).select("-password");
 
-    // Only populate college if the role schema has a college field
     if (req.user.role !== "admin") {
       query = query.populate("college", "name shortCode city");
     }
@@ -36,9 +28,6 @@ export const userDetails = async (req, res) => {
   }
 };
 
-/**
- * Enrolls a student in a society department.
- */
 export const enrollSociety = async (req, res) => {
   try {
     const { SocietyId, department } = req.body;
@@ -47,7 +36,6 @@ export const enrollSociety = async (req, res) => {
       return res.status(400).json({ success: false, message: "Society ID and Department are required" });
     }
 
-    // Check for existing enrollment in student's record
     const existing = await User.findOne({
       _id: req.user._id,
       "society.SocietyId": SocietyId,
@@ -61,7 +49,6 @@ export const enrollSociety = async (req, res) => {
       });
     }
 
-    // Push to student's applied societies
     await User.findByIdAndUpdate(req.user._id, {
       $push: {
         society: {
@@ -72,7 +59,6 @@ export const enrollSociety = async (req, res) => {
       },
     });
 
-    // Add student to Society department students list
     await Society.findOneAndUpdate(
       {
         _id: SocietyId,
@@ -95,14 +81,10 @@ export const enrollSociety = async (req, res) => {
   }
 };
 
-/**
- * Withdraws a student application from a department.
- */
 export const deleteSociety = async (req, res) => {
   try {
     const { _id, SocietyId, department } = req.body;
 
-    // Pull from student's society array
     await User.findByIdAndUpdate(
       req.user._id,
       {
@@ -113,7 +95,6 @@ export const deleteSociety = async (req, res) => {
       { new: true }
     );
 
-    // If SocietyId and department are provided, also remove from Society
     if (SocietyId && department) {
       await Society.findOneAndUpdate(
         {

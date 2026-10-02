@@ -6,10 +6,6 @@ import { College } from "../Schema/CollegeSchema.js";
 import { createJWT } from "../utilis/jwt.js";
 import { findAccountByEmail, emailExistsInAnyCollection, getModelByRole } from "../utilis/getModelByRole.js";
 
-/**
- * Login handler: Searches across User, Member, and Admin collections in parallel.
- * At most one match will exist because email uniqueness is enforced across all collections.
- */
 export const login = async (req, res) => {
   try {
     const { email, inputpassword } = req.body;
@@ -41,12 +37,6 @@ export const login = async (req, res) => {
   }
 };
 
-/**
- * Registration (signin) handler:
- * Enforces email uniqueness across all three collections (User, Member, Admin).
- * Validates selected college against the College collection.
- * Creates document in the appropriate role collection.
- */
 export const signin = async (req, res) => {
   try {
     const { email, inputpassword, role = "user", code = "", college, f_name, l_name } = req.body;
@@ -57,13 +47,11 @@ export const signin = async (req, res) => {
 
     const cleanEmail = email.toLowerCase().trim();
 
-    // 1. Verify email uniqueness across all three collections
     const alreadyExists = await emailExistsInAnyCollection(cleanEmail);
     if (alreadyExists) {
       return res.status(400).json({ verified: false, error_message: "Email is already registered" });
     }
 
-    // 2. Validate role & security code for elevated roles
     if (role === "member" || role === "admin") {
       if (code !== "recruit") {
         return res.status(400).json({ verified: false, error_message: "Invalid security code for privileged role" });
@@ -72,7 +60,6 @@ export const signin = async (req, res) => {
       return res.status(400).json({ verified: false, error_message: "Invalid account role" });
     }
 
-    // 3. College validation (backend verification - never trust frontend alone)
     let validCollegeId = null;
     if (college) {
       const foundCollege = await College.findById(college);
@@ -81,15 +68,12 @@ export const signin = async (req, res) => {
       }
       validCollegeId = foundCollege._id;
     } else if (role === "user" || role === "member") {
-      // If student/member didn't provide college, check if at least one college exists to link or require it
       const firstCol = await College.findOne();
       if (firstCol) validCollegeId = firstCol._id;
     }
 
-    // 4. Hash password
     const password = await bcrypt.hash(inputpassword, 10);
 
-    // 5. Create in the dedicated collection based on role
     let createdAccount = null;
 
     if (role === "admin") {
@@ -110,7 +94,6 @@ export const signin = async (req, res) => {
         l_name: l_name?.trim() || "",
       });
     } else {
-      // Student user
       createdAccount = await User.create({
         email: cleanEmail,
         password,
@@ -132,22 +115,16 @@ export const signin = async (req, res) => {
   }
 };
 
-/**
- * Profile update handler for the authenticated entity.
- * Validates college if updated and saves into the appropriate model.
- */
 export const createuserprofile = async (req, res) => {
   try {
     const _id = req.user._id;
     const role = req.user.role || "user";
     const profileData = { ...req.body };
 
-    // Prevent overwriting credentials directly through profile update
     delete profileData.password;
     delete profileData.email;
     delete profileData.role;
 
-    // Validate college if provided
     if (profileData.college) {
       const col = await College.findById(profileData.college);
       if (!col) {

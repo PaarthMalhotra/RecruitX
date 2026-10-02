@@ -70,7 +70,6 @@ const Userdashboard = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-5 pb-8 font-sans text-m3-text">
-      {/* Header Banner: Gradient from #D3E3FD to #C2E7FF with dark blue #041E49 text (Requirement 7) */}
       <div className="bg-gradient-to-r from-active-tint to-tonal rounded-[16px] p-6 sm:p-8 text-text-active shadow-xs border border-tonal/60">
         <div className="max-w-2xl space-y-2">
           <span className="inline-block px-3.5 py-1 bg-surface/80 rounded-full text-xs font-semibold text-text-active border border-surface shadow-2xs">
@@ -85,7 +84,6 @@ const Userdashboard = () => {
         </div>
       </div>
 
-      {/* Category Tabs Navigation with Pill-shaped triggers */}
       <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
         <ScrollArea className="w-full whitespace-nowrap rounded-full">
           <TabsList className="flex w-max space-x-1.5 p-1 bg-field rounded-full border border-m3-border/50">
@@ -107,7 +105,6 @@ const Userdashboard = () => {
         </ScrollArea>
       </Tabs>
 
-      {/* Societies Cards Grid */}
       <SocietyCard societies={filtered} loading={loading} />
     </div>
   );
